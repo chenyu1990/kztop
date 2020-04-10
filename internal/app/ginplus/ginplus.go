@@ -6,11 +6,11 @@ import (
 	"net/http"
 	"strings"
 
-	icontext "github.com/LyricTian/gin-admin/internal/app/context"
-	"github.com/LyricTian/gin-admin/internal/app/errors"
-	"github.com/LyricTian/gin-admin/internal/app/schema"
-	"github.com/LyricTian/gin-admin/pkg/logger"
-	"github.com/LyricTian/gin-admin/pkg/util"
+	icontext "kztop/internal/app/context"
+	"kztop/internal/app/errors"
+	"kztop/internal/app/schema"
+	"kztop/pkg/logger"
+	"kztop/pkg/util"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 )

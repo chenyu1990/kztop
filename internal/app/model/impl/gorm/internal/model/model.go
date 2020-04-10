@@ -3,8 +3,8 @@ package model
 import (
 	"context"
 
-	icontext "github.com/LyricTian/gin-admin/internal/app/context"
-	"github.com/LyricTian/gin-admin/internal/app/schema"
+	icontext "kztop/internal/app/context"
+	"kztop/internal/app/schema"
 	"github.com/jinzhu/gorm"
 )
 

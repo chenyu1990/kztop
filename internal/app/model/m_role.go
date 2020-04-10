@@ -3,7 +3,7 @@ package model
 import (
 	"context"
 
-	"github.com/LyricTian/gin-admin/internal/app/schema"
+	"kztop/internal/app/schema"
 )
 
 // IRole 角色管理

@@ -9,9 +9,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/LyricTian/gin-admin/internal/app"
-	"github.com/LyricTian/gin-admin/pkg/logger"
-	"github.com/LyricTian/gin-admin/pkg/util"
+	"kztop/internal/app"
+	"kztop/pkg/logger"
+	"kztop/pkg/util"
 )
 
 // VERSION 版本号，
@@ -27,7 +27,7 @@ var (
 )
 
 func init() {
-	flag.StringVar(&configFile, "c", "", "配置文件(.json,.yaml,.toml)")
+	flag.StringVar(&configFile, "c", "configs/dev_config.toml", "配置文件(.json,.yaml,.toml)")
 	flag.StringVar(&modelFile, "m", "", "Casbin的访问控制模型(.conf)")
 	flag.StringVar(&wwwDir, "www", "", "静态站点目录")
 	flag.StringVar(&swaggerDir, "swagger", "", "swagger目录")

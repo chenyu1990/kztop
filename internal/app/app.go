@@ -2,13 +2,14 @@ package app
 
 import (
 	"context"
+	"kztop/internal/app/cron"
 	"os"
 
-	"github.com/LyricTian/gin-admin/internal/app/bll/impl"
-	"github.com/LyricTian/gin-admin/internal/app/config"
-	"github.com/LyricTian/gin-admin/pkg/auth"
-	"github.com/LyricTian/gin-admin/pkg/logger"
 	"go.uber.org/dig"
+	"kztop/internal/app/bll/impl"
+	"kztop/internal/app/config"
+	"kztop/pkg/auth"
+	"kztop/pkg/logger"
 )
 
 type options struct {
@@ -117,6 +118,10 @@ func Init(ctx context.Context, opts ...Option) func() {
 
 	// 初始化HTTP服务
 	httpCall := InitHTTPServer(ctx, container)
+
+	// 启动定时任务
+	go cron.Init(container)
+
 	return func() {
 		if httpCall != nil {
 			httpCall()

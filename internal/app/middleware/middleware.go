@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/LyricTian/gin-admin/internal/app/errors"
-	"github.com/LyricTian/gin-admin/internal/app/ginplus"
+	"kztop/internal/app/errors"
+	"kztop/internal/app/ginplus"
 	"github.com/gin-gonic/gin"
 )
 

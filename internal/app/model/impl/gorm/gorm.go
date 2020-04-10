@@ -3,10 +3,10 @@ package gorm
 import (
 	"time"
 
-	"github.com/LyricTian/gin-admin/internal/app/config"
-	"github.com/LyricTian/gin-admin/internal/app/model"
-	"github.com/LyricTian/gin-admin/internal/app/model/impl/gorm/internal/entity"
-	imodel "github.com/LyricTian/gin-admin/internal/app/model/impl/gorm/internal/model"
+	"kztop/internal/app/config"
+	"kztop/internal/app/model"
+	"kztop/internal/app/model/impl/gorm/internal/entity"
+	imodel "kztop/internal/app/model/impl/gorm/internal/model"
 	"github.com/jinzhu/gorm"
 	"go.uber.org/dig"
 
@@ -60,14 +60,9 @@ func AutoMigrate(db *gorm.DB) error {
 	}
 
 	return db.AutoMigrate(
-		new(entity.Demo),
-		new(entity.User),
-		new(entity.UserRole),
-		new(entity.Role),
-		new(entity.RoleMenu),
-		new(entity.Menu),
-		new(entity.MenuAction),
-		new(entity.MenuResource),
+		new(entity.News),
+		new(entity.WorldRecord),
+		new(entity.Country),
 	).Error
 }
 
@@ -86,7 +81,17 @@ func Inject(container *dig.Container) error {
 	_ = container.Provide(func(m *imodel.Menu) model.IMenu { return m })
 	_ = container.Provide(imodel.NewRole)
 	_ = container.Provide(func(m *imodel.Role) model.IRole { return m })
-	_ = container.Provide(imodel.NewUser)
-	_ = container.Provide(func(m *imodel.User) model.IUser { return m })
+	_ = container.Provide(imodel.NewNub)
+	_ = container.Provide(func(m *imodel.Nub) model.INub { return m })
+	_ = container.Provide(imodel.NewPro)
+	_ = container.Provide(func(m *imodel.Pro) model.IPro { return m })
+	_ = container.Provide(imodel.NewWpn)
+	_ = container.Provide(func(m *imodel.Wpn) model.IWpn { return m })
+	_ = container.Provide(imodel.NewWorldRecord)
+	_ = container.Provide(func(m *imodel.WorldRecord) model.IWorldRecord { return m })
+	_ = container.Provide(imodel.NewNews)
+	_ = container.Provide(func(m *imodel.News) model.INews { return m })
+	_ = container.Provide(imodel.NewCountry)
+	_ = container.Provide(func(m *imodel.Country) model.ICountry { return m })
 	return nil
 }

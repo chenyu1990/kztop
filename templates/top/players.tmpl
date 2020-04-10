@@ -1,0 +1,90 @@
+{{define "top/players"}}
+    <html>
+    {{template "common/css"}}
+    <link rel="stylesheet" type="text/css" href="/css/common.css">
+    <title>Players - Top - 97Club</title>
+    <body>
+    {{template "common/nav"}}
+    <div class="countries-container">
+        <table class="countries-table" style="table-layout: fixed">
+            <tr class="countries-table-header">
+                <th class="countries-table-header-child">国家/地区</th>
+                <th class="countries-table-header-child">数量</th>
+                <th class="countries-table-header-child" width="20px"></th>
+                <th class="countries-table-header-child">国家/地区</th>
+                <th class="countries-table-header-child">数量</th>
+                <th class="countries-table-header-child" width="20px"></th>
+                <th class="countries-table-header-child">国家/地区</th>
+                <th class="countries-table-header-child">数量</th>
+                <th class="countries-table-header-child" width="20px"></th>
+                <th class="countries-table-header-child">国家/地区</th>
+                <th class="countries-table-header-child">数量</th>
+            </tr>
+            {{$number := 1}}
+            {{$countryTotal := 0}}
+            {{range $country := .countriesSort}}
+                {{if eq (Mod $number 4) 1}}
+                <tr class="countries-table-data">
+                {{end}}
+                    <td class="countries-table-data-child"><img src="/flag/{{ToLower $country}}.png" title="{{(index $.countriesInfo (ToLower $country)).English}}" /> {{(index $.countriesInfo (ToLower $country)).Chinese}}</td>
+                    <td class="countries-table-data-child">{{index $.countries $country}}</td>
+                    {{if ne (Mod $number 4) 0}}
+                    <td class="countries-table-data-child" style="background-color: #fff" width="20px"></td>
+                    {{end}}
+                {{if eq (Mod $number 4) 0}}
+                </tr>
+                {{end}}
+                {{$number = (Inc $number 1)}}
+                {{$countryTotal = (Inc $countryTotal 1)}}
+            {{end}}
+        </table>
+        {{$playerTotal := 0}}
+        {{range .players}}
+            {{$playerTotal = (Inc $playerTotal 1)}}
+        {{end}}
+        <div class="top-players-stat">
+            <ul>
+                <li>正版玩家共计 {{$playerTotal}}</li>
+                <li>来自 {{$countryTotal}} 个国家/地区</li>
+            </ul>
+        </div>
+        <div class="top-switch">
+            <ul>
+                <li class="{{if eq .sort "pro"}}active{{end}}"><a href="/players?sort=pro">无存排序</a></li>
+                <li class="{{if eq .sort "nub"}}active{{end}}"><a href="/players?sort=nub">存点排序</a></li>
+                <li class="{{if eq .sort "wpn"}}active{{end}}"><a href="/players?sort=wpn">武器排序</a></li>
+            </ul>
+        </div>
+        <table class="top-table">
+            <tr class="top-table-header">
+                <th class="top-table-header-child">#</th>
+                <th class="top-table-header-child">挑战者</th>
+                <th class="top-table-header-child">无存</th>
+                <th class="top-table-header-child">存点</th>
+                <th class="top-table-header-child">武器</th>
+            </tr>
+            {{$counter := 1}}
+            {{$playerStatSort := .playerStatSortByPro}}
+            {{if eq .sort "pro"}}
+                {{$playerStatSort = .playerStatSortByPro}}
+            {{else if eq .sort "nub"}}
+                {{$playerStatSort = .playerStatSortByNub}}
+            {{else if eq .sort "wpn"}}
+                {{$playerStatSort = .playerStatSortByWpn}}
+            {{end}}
+            {{range $steamID := $playerStatSort}}
+                <tr class="top-table-data">
+                    <td class="top-table-data-child center">{{$counter}}</td>
+                    <td class="top-table-data-child"><img src="/flag/{{ToLower (index $.playerInfo $steamID).country}}.png" /> {{UnescapeString (index $.playerInfo $steamID).nick}}<a class="top-steam" href="/player/{{(index $.playerInfo $steamID).steamID64}}/nub">{{$steamID}}</a></td>
+                    <td class="top-table-data-child">{{if (index $.playerStat $steamID).pro}}{{(index $.playerStat $steamID).pro}}{{else}}0{{end}}</td>
+                    <td class="top-table-data-child">{{if (index $.playerStat $steamID).nub}}{{(index $.playerStat $steamID).nub}}{{else}}0{{end}}</td>
+                    <td class="top-table-data-child">{{if (index $.playerStat $steamID).wpn}}{{(index $.playerStat $steamID).wpn}}{{else}}0{{end}}</td>
+                </tr>
+                {{$counter = (Inc $counter 1)}}
+            {{end}}
+
+        </table>
+    </div>
+    </body>
+    </html>
+{{end}}

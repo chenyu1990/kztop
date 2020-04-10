@@ -3,7 +3,7 @@ package model
 import (
 	"context"
 
-	"github.com/LyricTian/gin-admin/internal/app/errors"
+	"kztop/internal/app/errors"
 	"github.com/jinzhu/gorm"
 )
 

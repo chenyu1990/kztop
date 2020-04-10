@@ -9,8 +9,8 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/LyricTian/gin-admin/internal/app"
-	"github.com/LyricTian/gin-admin/internal/app/config"
+	"kztop/internal/app"
+	"kztop/internal/app/config"
 	"github.com/gin-gonic/gin"
 )
 

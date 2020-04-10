@@ -7,10 +7,10 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/LyricTian/gin-admin/internal/app/config"
-	"github.com/LyricTian/gin-admin/internal/app/middleware"
-	"github.com/LyricTian/gin-admin/internal/app/routers/api"
-	"github.com/LyricTian/gin-admin/pkg/logger"
+	"kztop/internal/app/config"
+	"kztop/internal/app/middleware"
+	"kztop/internal/app/routers/api"
+	"kztop/pkg/logger"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/dig"
 )

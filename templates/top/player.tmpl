@@ -1,0 +1,91 @@
+{{define "top/player"}}
+    <html>
+    {{template "common/css"}}
+    <link rel="stylesheet" type="text/css" href="/css/common.css">
+    <title>{{ .info.nick }} - Top - 97Club</title>
+    <body>
+    {{template "common/nav"}}
+    <div class="player-container">
+        <table class="player-table">
+            <tr class="center">
+                <td width="186">Steam头像</td>
+                <td colspan="2">玩家信息</td>
+            </tr>
+            <tr>
+                <td rowspan="13" style="background: url({{.info.avatarIcon}}) no-repeat center center;"></td>
+                <td>SteamID</td>
+                <td class="green">{{ .player }}</td>
+            </tr>
+            <tr>
+                <td>游戏昵称</td>
+                <td>{{UnescapeString .info.nick}}</td>
+            </tr>
+            <tr>
+                <td>国家</td>
+                <td><img src="/flag/{{ .info.country }}.png" /> 中国</td>
+            </tr>
+            <tr>
+                <td>玩家状态</td>
+                <td>offline | <a href="http://steamcommunity.com/profiles/{{.info.steamID64}}" target="_blank">Steam官方档案(公开)</a></td>
+            </tr>
+            <tr>
+                <td>统计排名</td>
+                <td>待定</td>
+            </tr>
+            <tr>
+                <td>第一(所有榜)</td>
+                <td>building</td>
+            </tr>
+            <tr>
+                <td>总纪录</td>
+                <td>{{$.stat.total}}</td>
+            </tr>
+            <tr>
+                <td>点赞数</td>
+                <td>building</td>
+            </tr>
+        </table>
+    </div>
+    <div class="top-switch">
+        <ul>
+            <li class="{{if eq .cate "pro"}}active{{end}}"><a href="/player/{{.info.steamID64}}/pro">无存纪录[{{if $.stat.pro}}{{$.stat.pro}}{{else}}0{{end}}]</a></li>
+            <li class="{{if eq .cate "nub"}}active{{end}}"><a href="/player/{{.info.steamID64}}/nub">存点纪录[{{if $.stat.nub}}{{$.stat.nub}}{{else}}0{{end}}]</a></li>
+            <li class="{{if eq .cate "wpn"}}active{{end}}"><a href="/player/{{.info.steamID64}}/wpn">武器纪录[{{if $.stat.wpn}}{{$.stat.wpn}}{{else}}0{{end}}]</a></li>
+        </ul>
+    </div>
+    <div class="top-container">
+        <table class="top-table">
+            <tr class="top-table-header">
+                <th class="top-table-header-child">#</th>
+                <th class="top-table-header-child">挑战地图</th>
+                <th class="top-table-header-child">挑战时间</th>
+                {{if ne $.cate "pro" }}
+                    <th class="top-table-header-child">存/读</th>
+                {{end}}
+                {{if eq $.cate "wpn" }}
+                    <th class="top-table-header-child">武器</th>
+                {{end}}
+                <th class="top-table-header-child center">完成次数</th>
+                <th class="top-table-header-child">挑战日期</th>
+            </tr>
+            {{range $i, $v := .list}}
+                <tr class="top-table-data">
+                    <td class="top-table-data-child">{{Inc $i 1}}</td>
+                    <td class="top-table-data-child"><a href="/top/{{$.cate}}/{{$v.MapName}}">{{$v.MapName}}</a></td>
+                    <td class="top-table-data-child">{{SecondsToMinutes $v.Time}}</td>
+                    {{if ne $.cate "pro" }}
+                        <td class="top-table-data-child">{{$v.CheckPoints}}/{{$v.GoChecks}}</td>
+                    {{end}}
+                    {{if eq $.cate "wpn" }}
+                        <td class="top-table-data-child"><img src="/img/weapon/{{$v.Weapon}}.gif" /></td>
+                    {{end}}
+                    <td class="top-table-data-child center">{{$v.FinishCount}}</td>
+                    <td class="top-table-data-child">{{FormatDate $v.Date}}</td>
+                </tr>
+            {{end}}
+
+        </table>
+    </div>
+    </body>
+    </html>
+{{end}}

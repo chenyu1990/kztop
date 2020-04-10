@@ -3,11 +3,11 @@ package internal
 import (
 	"context"
 
-	"github.com/LyricTian/gin-admin/internal/app/config"
-	"github.com/LyricTian/gin-admin/internal/app/errors"
-	"github.com/LyricTian/gin-admin/internal/app/model"
-	"github.com/LyricTian/gin-admin/internal/app/schema"
-	"github.com/LyricTian/gin-admin/pkg/util"
+	"kztop/internal/app/config"
+	"kztop/internal/app/errors"
+	"kztop/internal/app/model"
+	"kztop/internal/app/schema"
+	"kztop/pkg/util"
 	"github.com/casbin/casbin/v2"
 )
 

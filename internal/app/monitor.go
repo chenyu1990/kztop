@@ -1,7 +1,7 @@
 package app
 
 import (
-	"github.com/LyricTian/gin-admin/internal/app/config"
+	"kztop/internal/app/config"
 	"github.com/google/gops/agent"
 )
 

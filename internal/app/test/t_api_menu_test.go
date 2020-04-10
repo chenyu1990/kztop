@@ -4,8 +4,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/LyricTian/gin-admin/internal/app/schema"
-	"github.com/LyricTian/gin-admin/pkg/util"
+	"kztop/internal/app/schema"
+	"kztop/pkg/util"
 	"github.com/stretchr/testify/assert"
 )
 

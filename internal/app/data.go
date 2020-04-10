@@ -4,10 +4,10 @@ import (
 	"context"
 	"os"
 
-	"github.com/LyricTian/gin-admin/internal/app/bll"
-	"github.com/LyricTian/gin-admin/internal/app/config"
-	"github.com/LyricTian/gin-admin/internal/app/schema"
-	"github.com/LyricTian/gin-admin/pkg/util"
+	"kztop/internal/app/bll"
+	"kztop/internal/app/config"
+	"kztop/internal/app/schema"
+	"kztop/pkg/util"
 	"go.uber.org/dig"
 )
 

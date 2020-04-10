@@ -1,4 +1,4 @@
-module github.com/LyricTian/gin-admin
+module kztop
 
 go 1.13
 
@@ -18,6 +18,8 @@ require (
 	github.com/jinzhu/gorm v1.9.11
 	github.com/json-iterator/go v1.1.8
 	github.com/pkg/errors v0.8.1
+	github.com/robfig/cron/v3 v3.0.0
+	github.com/sergi/go-diff v1.1.0
 	github.com/sirupsen/logrus v1.4.2
 	github.com/stretchr/testify v1.4.0
 	github.com/swaggo/swag v1.6.3

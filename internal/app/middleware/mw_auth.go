@@ -1,10 +1,10 @@
 package middleware
 
 import (
-	"github.com/LyricTian/gin-admin/internal/app/config"
-	"github.com/LyricTian/gin-admin/internal/app/errors"
-	"github.com/LyricTian/gin-admin/internal/app/ginplus"
-	"github.com/LyricTian/gin-admin/pkg/auth"
+	"kztop/internal/app/config"
+	"kztop/internal/app/errors"
+	"kztop/internal/app/ginplus"
+	"kztop/pkg/auth"
 	"github.com/gin-gonic/gin"
 )
 
