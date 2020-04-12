@@ -53,6 +53,7 @@
                 <li class="{{if eq .sort "pro"}}active{{end}}"><a href="/players?sort=pro">无存排序</a></li>
                 <li class="{{if eq .sort "nub"}}active{{end}}"><a href="/players?sort=nub">存点排序</a></li>
                 <li class="{{if eq .sort "wpn"}}active{{end}}"><a href="/players?sort=wpn">武器排序</a></li>
+                <li class="{{if eq .sort "first"}}active{{end}}"><a href="/players?sort=first">第一排序</a></li>
             </ul>
         </div>
         <table class="top-table">
@@ -63,6 +64,7 @@
                 <th class="top-table-header-child">存点</th>
                 <th class="top-table-header-child">武器</th>
                 <th class="top-table-header-child">合计</th>
+                <th class="top-table-header-child">第一</th>
             </tr>
             {{$counter := 1}}
             {{$playerStatSort := .playerStatSortByPro}}
@@ -72,6 +74,8 @@
                 {{$playerStatSort = .playerStatSortByNub}}
             {{else if eq .sort "wpn"}}
                 {{$playerStatSort = .playerStatSortByWpn}}
+            {{else if eq .sort "first"}}
+                {{$playerStatSort = .playerStatSortByFirst}}
             {{end}}
             {{range $steamID := $playerStatSort}}
                 <tr class="top-table-data">
@@ -81,6 +85,7 @@
                     <td class="top-table-data-child">{{if (index $.playerStat $steamID).nub}}{{(index $.playerStat $steamID).nub}}{{else}}0{{end}}</td>
                     <td class="top-table-data-child">{{if (index $.playerStat $steamID).wpn}}{{(index $.playerStat $steamID).wpn}}{{else}}0{{end}}</td>
                     <td class="top-table-data-child">{{if (index $.playerStat $steamID).total}}{{(index $.playerStat $steamID).total}}{{else}}0{{end}}</td>
+                    <td class="top-table-data-child">{{if (index $.playerStat $steamID).first}}{{(index $.playerStat $steamID).first}}{{else}}0{{end}}</td>
                 </tr>
                 {{$counter = (Inc $counter 1)}}
             {{end}}

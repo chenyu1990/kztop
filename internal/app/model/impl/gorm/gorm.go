@@ -61,6 +61,7 @@ func AutoMigrate(db *gorm.DB) error {
 
 	return db.AutoMigrate(
 		new(entity.News),
+		new(entity.Record),
 		new(entity.WorldRecord),
 		new(entity.Country),
 		new(entity.Admin),
@@ -88,13 +89,15 @@ func Inject(container *dig.Container) error {
 	_ = container.Provide(func(m *imodel.Pro) model.IPro { return m })
 	_ = container.Provide(imodel.NewWpn)
 	_ = container.Provide(func(m *imodel.Wpn) model.IWpn { return m })
-	_ = container.Provide(imodel.NewWorldRecord)
-	_ = container.Provide(func(m *imodel.WorldRecord) model.IWorldRecord { return m })
+	_ = container.Provide(imodel.NewRecord)
+	_ = container.Provide(func(m *imodel.Record) model.IRecord { return m })
 	_ = container.Provide(imodel.NewNews)
 	_ = container.Provide(func(m *imodel.News) model.INews { return m })
 	_ = container.Provide(imodel.NewCountry)
 	_ = container.Provide(func(m *imodel.Country) model.ICountry { return m })
 	_ = container.Provide(imodel.NewAdmin)
 	_ = container.Provide(func(m *imodel.Admin) model.IAdmin { return m })
+	_ = container.Provide(imodel.NewWorldRecord)
+	_ = container.Provide(func(m *imodel.WorldRecord) model.IWorldRecord { return m })
 	return nil
 }

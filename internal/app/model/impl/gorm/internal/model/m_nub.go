@@ -86,6 +86,15 @@ func (a *Nub) Update(ctx context.Context, recordID string, item schema.Nub) erro
 	return nil
 }
 
+// UpdateInfo 更新信息
+func (a *Nub) UpdateInfo(ctx context.Context, info schema.UpdateInfo) error {
+	result := entity.GetProDB(ctx, a.db).Where("authid=?", info.AuthID).Omit("authid").Updates(info)
+	if err := result.Error; err != nil {
+		return errors.WithStack(err)
+	}
+	return nil
+}
+
 // Delete 删除数据
 func (a *Nub) Delete(ctx context.Context, recordID string) error {
 	result := entity.GetNubDB(ctx, a.db).Where("record_id=?", recordID).Delete(entity.Nub{})

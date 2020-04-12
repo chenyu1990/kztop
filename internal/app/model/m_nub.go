@@ -16,6 +16,7 @@ type INub interface {
 	Create(ctx context.Context, item schema.Nub) error
 	// 更新数据
 	Update(ctx context.Context, recordID string, item schema.Nub) error
+	UpdateInfo(ctx context.Context, info schema.UpdateInfo) error
 	// 删除数据
 	Delete(ctx context.Context, recordID string) error
 	// 更新状态

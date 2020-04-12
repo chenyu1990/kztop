@@ -42,7 +42,7 @@ func (a WorldRecord) String() string {
 
 // TableName 表名
 func (a WorldRecord) TableName() string {
-	return "kz_record"
+	return "kz_world_record"
 }
 
 // ToSchemaWorldRecord 转换为WorldRecord对象

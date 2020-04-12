@@ -51,3 +51,17 @@ type PaginationParam struct {
 type PaginationResult struct {
 	Total int // 总数据条数
 }
+
+type Orders map[string]int
+type OrderParam struct {
+	Orders Orders
+}
+
+type OrderParams []*OrderParam
+
+const intMax = int(^uint(0) >> 1)
+const intMin = ^intMax
+const (
+	OrderASC  = intMin
+	OrderDESC = intMin + 1
+)

@@ -2,6 +2,8 @@ package model
 
 import (
 	"context"
+	"fmt"
+	"kztop/internal/app/config"
 
 	icontext "kztop/internal/app/context"
 	"kztop/internal/app/schema"
@@ -90,6 +92,31 @@ func FindPage(ctx context.Context, db *gorm.DB, pageIndex, pageSize int, out int
 	}
 
 	return count, nil
+}
+
+func Order(orders map[string]int) string {
+	cfg := config.Global()
+	switch cfg.Gorm.DBType {
+	case "mysql":
+		var order string
+		var glue string
+		for field, sort := range orders {
+			var sortString string
+			switch sort {
+			case schema.OrderASC:
+				sortString = "ASC"
+			case schema.OrderDESC:
+				sortString = "DESC"
+			default:
+				sortString = fmt.Sprintf("%d", sort)
+			}
+			order = fmt.Sprintf("%s%s%s %s", order, glue, field, sortString)
+			glue = ","
+		}
+		return order
+	}
+
+	return ""
 }
 
 // FindOne 查询单条数据

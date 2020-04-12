@@ -30,6 +30,7 @@ func (a SchemaWpn) ToWpn() *Wpn {
 		CheckPoints: &a.CheckPoints,
 		GoChecks:    &a.GoChecks,
 		Route:       &a.Route,
+		Speed:       &a.Speed,
 		Date:        &a.Date,
 	}
 	return item
@@ -75,6 +76,7 @@ func (a Wpn) ToSchemaWpn() *schema.Wpn {
 		CheckPoints: *a.CheckPoints,
 		GoChecks:    *a.GoChecks,
 		Route:       *a.Route,
+		Speed:       *a.Speed,
 		Date:        *a.Date,
 	}
 	return item

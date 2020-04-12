@@ -16,6 +16,7 @@ type IWpn interface {
 	Create(ctx context.Context, item schema.Wpn) error
 	// 更新数据
 	Update(ctx context.Context, recordID string, item schema.Wpn) error
+	UpdateInfo(ctx context.Context, info schema.UpdateInfo) error
 	// 删除数据
 	Delete(ctx context.Context, recordID string) error
 	// 更新状态

@@ -36,7 +36,7 @@ func (a *Wpn) Query(ctx context.Context, params schema.WpnQueryParam, opts ...sc
 	if v := params.AuthID; v != "" {
 		db = db.Where("authid=?", v)
 	}
-	db = db.Order("`time` ASC")
+	db = db.Order("speed ASC, `time` ASC")
 
 	opt := a.getQueryOption(opts...)
 	var list entity.Wpns
@@ -80,6 +80,15 @@ func (a *Wpn) Create(ctx context.Context, item schema.Wpn) error {
 func (a *Wpn) Update(ctx context.Context, recordID string, item schema.Wpn) error {
 	Wpn := entity.SchemaWpn(item).ToWpn()
 	result := entity.GetWpnDB(ctx, a.db).Where("record_id=?", recordID).Omit("record_id", "creator").Updates(Wpn)
+	if err := result.Error; err != nil {
+		return errors.WithStack(err)
+	}
+	return nil
+}
+
+// UpdateInfo 更新信息
+func (a *Wpn) UpdateInfo(ctx context.Context, info schema.UpdateInfo) error {
+	result := entity.GetProDB(ctx, a.db).Where("authid=?", info.AuthID).Omit("authid").Updates(info)
 	if err := result.Error; err != nil {
 		return errors.WithStack(err)
 	}

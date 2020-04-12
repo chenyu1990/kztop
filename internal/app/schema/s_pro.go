@@ -22,6 +22,12 @@ type Pro struct {
 	Hash        string    `json:"hash"`
 }
 
+type UpdateInfo struct {
+	AuthID  string `json:"authid"`
+	Country string `json:"country"`
+	Name    string `json:"name"`
+}
+
 func (a *Pro) Validation() bool {
 	queryStr := fmt.Sprintf("%s%s%s%s%.2f%s%d%s%s",
 		a.MapName,
