@@ -15,7 +15,7 @@ type IPro interface {
 	// 创建数据
 	Create(ctx context.Context, item schema.Pro) error
 	// 更新数据
-	Update(ctx context.Context, recordID string, item schema.Pro) error
+	Update(ctx context.Context, params *schema.ProQueryParam, item schema.Pro) error
 	// 删除数据
 	Delete(ctx context.Context, recordID string) error
 	// 更新状态

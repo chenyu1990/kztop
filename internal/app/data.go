@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"kztop/internal/app/data"
 	"os"
 
 	"kztop/internal/app/bll"
@@ -13,6 +14,12 @@ import (
 
 // InitData 初始化应用数据
 func InitData(ctx context.Context, container *dig.Container) error {
+
+	err := data.InitAdminData(ctx, container)
+	if err != nil {
+		return err
+	}
+
 	if c := config.Global().Menu; c.Enable && c.Data != "" {
 		return initMenuData(ctx, container)
 	}

@@ -1,6 +1,11 @@
 package schema
 
-import "time"
+import (
+	"fmt"
+	"kztop/pkg/kreedz"
+	"kztop/pkg/util"
+	"time"
+)
 
 // Pro Pro对象
 type Pro struct {
@@ -14,6 +19,23 @@ type Pro struct {
 	Server      string    `json:"server"`
 	Route       string    `json:"route"`
 	Date        time.Time `json:"date"`
+	Hash        string    `json:"hash"`
+}
+
+func (a *Pro) Validation() bool {
+	queryStr := fmt.Sprintf("%s%s%s%s%.2f%s%d%s%s",
+		a.MapName,
+		a.AuthID,
+		a.Country,
+		a.Name,
+		a.Time,
+		a.Weapon,
+		a.FinishCount,
+		a.Server,
+		a.Route,
+	)
+	hash := util.MD5HashString(util.MD5HashString(queryStr) + kreedz.SECRET_KEY)
+	return hash == a.Hash
 }
 
 // ProQueryParam 查询条件

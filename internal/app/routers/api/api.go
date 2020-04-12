@@ -45,6 +45,7 @@ func RegisterRouter(app *gin.Engine, container *dig.Container) error {
 		top := app.Group("/top")
 		{
 			top.GET("/:cate/:mapname", cTop.Top)
+			top.PUT("/:cate", cTop.UpdateRecord)
 		}
 
 		player := app.Group("/player")
@@ -60,8 +61,9 @@ func RegisterRouter(app *gin.Engine, container *dig.Container) error {
 
 		record := app.Group("/record")
 		{
-			record.GET("", cRecord.Query)
-			record.GET("/:mapname", cRecord.Query)
+			record.GET("/org", cRecord.Org)
+			record.GET("/org/:org", cRecord.Org)
+			record.GET("/map/:mapname", cRecord.Map)
 		}
 
 		ips := app.Group("/ips")

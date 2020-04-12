@@ -1,0 +1,4 @@
+package kreedz
+
+// https://www.grc.com/passwords.htm
+const SECRET_KEY = "0627D0894F31EC9AA44A5D1C9A2BF400DE2BE363FBD1553E0DD5A0F00331924D"

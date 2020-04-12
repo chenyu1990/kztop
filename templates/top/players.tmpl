@@ -39,7 +39,7 @@
             {{end}}
         </table>
         {{$playerTotal := 0}}
-        {{range .players}}
+        {{range .playerStat}}
             {{$playerTotal = (Inc $playerTotal 1)}}
         {{end}}
         <div class="top-players-stat">
@@ -62,6 +62,7 @@
                 <th class="top-table-header-child">无存</th>
                 <th class="top-table-header-child">存点</th>
                 <th class="top-table-header-child">武器</th>
+                <th class="top-table-header-child">合计</th>
             </tr>
             {{$counter := 1}}
             {{$playerStatSort := .playerStatSortByPro}}
@@ -79,10 +80,10 @@
                     <td class="top-table-data-child">{{if (index $.playerStat $steamID).pro}}{{(index $.playerStat $steamID).pro}}{{else}}0{{end}}</td>
                     <td class="top-table-data-child">{{if (index $.playerStat $steamID).nub}}{{(index $.playerStat $steamID).nub}}{{else}}0{{end}}</td>
                     <td class="top-table-data-child">{{if (index $.playerStat $steamID).wpn}}{{(index $.playerStat $steamID).wpn}}{{else}}0{{end}}</td>
+                    <td class="top-table-data-child">{{if (index $.playerStat $steamID).total}}{{(index $.playerStat $steamID).total}}{{else}}0{{end}}</td>
                 </tr>
                 {{$counter = (Inc $counter 1)}}
             {{end}}
-
         </table>
     </div>
     </body>

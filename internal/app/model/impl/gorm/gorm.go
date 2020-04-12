@@ -63,6 +63,7 @@ func AutoMigrate(db *gorm.DB) error {
 		new(entity.News),
 		new(entity.WorldRecord),
 		new(entity.Country),
+		new(entity.Admin),
 	).Error
 }
 
@@ -93,5 +94,7 @@ func Inject(container *dig.Container) error {
 	_ = container.Provide(func(m *imodel.News) model.INews { return m })
 	_ = container.Provide(imodel.NewCountry)
 	_ = container.Provide(func(m *imodel.Country) model.ICountry { return m })
+	_ = container.Provide(imodel.NewAdmin)
+	_ = container.Provide(func(m *imodel.Admin) model.IAdmin { return m })
 	return nil
 }

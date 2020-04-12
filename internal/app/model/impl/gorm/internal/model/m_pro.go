@@ -27,15 +27,21 @@ func (a *Pro) getQueryOption(opts ...schema.ProQueryOptions) schema.ProQueryOpti
 	return opt
 }
 
-// Query 查询数据
-func (a *Pro) Query(ctx context.Context, params schema.ProQueryParam, opts ...schema.ProQueryOptions) (*schema.ProQueryResult, error) {
-	db := entity.GetProDB(ctx, a.db)
+func (a *Pro) where(db *gorm.DB, params *schema.ProQueryParam) *gorm.DB {
 	if v := params.MapName; v != "" {
 		db = db.Where("mapname=?", v)
 	}
 	if v := params.AuthID; v != "" {
 		db = db.Where("authid=?", v)
 	}
+
+	return db
+}
+
+// Query 查询数据
+func (a *Pro) Query(ctx context.Context, params schema.ProQueryParam, opts ...schema.ProQueryOptions) (*schema.ProQueryResult, error) {
+	db := entity.GetProDB(ctx, a.db)
+	db = a.where(db, &params)
 	db = db.Order("`time` ASC")
 
 	opt := a.getQueryOption(opts...)
@@ -77,9 +83,11 @@ func (a *Pro) Create(ctx context.Context, item schema.Pro) error {
 }
 
 // Update 更新数据
-func (a *Pro) Update(ctx context.Context, recordID string, item schema.Pro) error {
+func (a *Pro) Update(ctx context.Context, params *schema.ProQueryParam, item schema.Pro) error {
 	Pro := entity.SchemaPro(item).ToPro()
-	result := entity.GetProDB(ctx, a.db).Where("record_id=?", recordID).Omit("record_id", "creator").Updates(Pro)
+	db := entity.GetProDB(ctx, a.db)
+	db = a.where(db, params)
+	result := db.Omit("mapname", "authid").Updates(Pro)
 	if err := result.Error; err != nil {
 		return errors.WithStack(err)
 	}

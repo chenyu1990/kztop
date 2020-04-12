@@ -1,6 +1,11 @@
 package schema
 
-import "time"
+import (
+	"fmt"
+	"kztop/pkg/kreedz"
+	"kztop/pkg/util"
+	"time"
+)
 
 // Nub Nub对象
 type Nub struct {
@@ -16,6 +21,25 @@ type Nub struct {
 	GoChecks    int       `json:"go_checks"`
 	Route       string    `json:"route"`
 	Date        time.Time `json:"date"`
+	Hash        string    `json:"hash"`
+}
+
+func (a *Nub) Validation() bool {
+	queryStr := fmt.Sprintf("%s%s%s%s%.2f%s%d%s%d%d%s",
+		a.MapName,
+		a.AuthID,
+		a.Country,
+		a.Name,
+		a.Time,
+		a.Weapon,
+		a.FinishCount,
+		a.Server,
+		a.CheckPoints,
+		a.GoChecks,
+		a.Route,
+	)
+	hash := util.MD5HashString(util.MD5HashString(queryStr) + kreedz.SECRET_KEY)
+	return hash == a.Hash
 }
 
 // NubQueryParam 查询条件

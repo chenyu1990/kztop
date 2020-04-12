@@ -53,7 +53,6 @@ func (a *WorldRecord) where(db *gorm.DB, params *schema.WorldRecordQueryParam) *
 func (a *WorldRecord) Query(ctx context.Context, params schema.WorldRecordQueryParam, opts ...schema.WorldRecordQueryOptions) (*schema.WorldRecordQueryResult, error) {
 	db := entity.GetWorldRecordDB(ctx, a.db)
 	db = a.where(db, &params)
-	db = db.Order("`time` ASC")
 
 	opt := a.getQueryOption(opts...)
 	var list entity.WorldRecords

@@ -19,6 +19,8 @@
 /internal/app/test/data
 /tmp
 
+kztop_linux
+
 # IDE configs
 .idea
 .vscode

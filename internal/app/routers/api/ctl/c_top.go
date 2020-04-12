@@ -17,59 +17,23 @@ import (
 
 // NewTop 创建top控制器
 func NewTop(
-	mNub model.INub,
 	mPro model.IPro,
+	mNub model.INub,
 	mWpn model.IWpn,
 	mCountry model.ICountry,
 	mWorldRecord model.IWorldRecord,
 ) *Top {
-	// map[steamID][nub/pro/wpn]recordInfo
-	players := make(map[string]map[string][]schema.Wpn)
+	// map[steamID]recordInfo
+	playersPro := make(map[string][]*schema.Pro)
+	playersWpn := make(map[string][]*schema.Wpn)
+	playersNub := make(map[string][]*schema.Nub)
 	// map[steamID][firstCount/nub/pro/wpn/total/visitor/gotGreat]int64
 	playerStat := make(map[string]map[string]int64)
 	playerInfo := make(map[string]map[string]string)
 	countries := make(map[string]int)
 
 	ctx := context.Background()
-	nub, err := mNub.Query(ctx, schema.NubQueryParam{})
-	if err != nil {
-		panic(err)
-	}
-	for _, record := range nub.Data {
-		if kreedz.IsSteamID(record.AuthID) == false {
-			continue
-		}
-		if players[record.AuthID] == nil {
-			players[record.AuthID] = make(map[string][]schema.Wpn)
-			playerStat[record.AuthID] = make(map[string]int64)
-			playerInfo[record.AuthID] = make(map[string]string)
-			if record.Country == "" {
-				record.Country = "n-"
-			}
-			countries[record.Country]++
-		}
 
-		players[record.AuthID]["nub"] = append(players[record.AuthID]["nub"], schema.Wpn{
-			MapName:     record.MapName,
-			AuthID:      record.AuthID,
-			Country:     record.Country,
-			Name:        record.Name,
-			Time:        record.Time,
-			Weapon:      record.Weapon,
-			FinishCount: record.FinishCount,
-			Server:      record.Server,
-			CheckPoints: record.CheckPoints,
-			GoChecks:    record.GoChecks,
-			Route:       record.Route,
-			Date:        record.Date,
-		})
-		playerStat[record.AuthID]["nub"]++
-		playerStat[record.AuthID]["total"]++
-		playerInfo[record.AuthID]["country"] = strings.ToLower(record.Country)
-		playerInfo[record.AuthID]["steamID64"] = kreedz.SteamIDToSteamID64(record.AuthID)
-		playerInfo[record.AuthID]["nick"] = record.Name
-		// TODO first / visitor / gotGreat
-	}
 	pro, err := mPro.Query(ctx, schema.ProQueryParam{})
 	if err != nil {
 		panic(err)
@@ -78,8 +42,7 @@ func NewTop(
 		if kreedz.IsSteamID(record.AuthID) == false {
 			continue
 		}
-		if players[record.AuthID] == nil {
-			players[record.AuthID] = make(map[string][]schema.Wpn)
+		if playerStat[record.AuthID] == nil {
 			playerStat[record.AuthID] = make(map[string]int64)
 			playerInfo[record.AuthID] = make(map[string]string)
 			if record.Country == "" {
@@ -88,18 +51,7 @@ func NewTop(
 			countries[record.Country]++
 		}
 
-		players[record.AuthID]["pro"] = append(players[record.AuthID]["pro"], schema.Wpn{
-			MapName:     record.MapName,
-			AuthID:      record.AuthID,
-			Country:     record.Country,
-			Name:        record.Name,
-			Time:        record.Time,
-			Weapon:      record.Weapon,
-			FinishCount: record.FinishCount,
-			Server:      record.Server,
-			Route:       record.Route,
-			Date:        record.Date,
-		})
+		playersPro[record.AuthID] = append(playersPro[record.AuthID], record)
 		playerStat[record.AuthID]["pro"]++
 		playerStat[record.AuthID]["total"]++
 		playerInfo[record.AuthID]["country"] = strings.ToLower(record.Country)
@@ -108,16 +60,16 @@ func NewTop(
 
 		// TODO first / visitor / gotGreat
 	}
-	wpn, err := mWpn.Query(ctx, schema.WpnQueryParam{})
+
+	nub, err := mNub.Query(ctx, schema.NubQueryParam{})
 	if err != nil {
 		panic(err)
 	}
-	for _, record := range wpn.Data {
+	for _, record := range nub.Data {
 		if kreedz.IsSteamID(record.AuthID) == false {
 			continue
 		}
-		if players[record.AuthID] == nil {
-			players[record.AuthID] = make(map[string][]schema.Wpn)
+		if playerStat[record.AuthID] == nil {
 			playerStat[record.AuthID] = make(map[string]int64)
 			playerInfo[record.AuthID] = make(map[string]string)
 			if record.Country == "" {
@@ -126,7 +78,33 @@ func NewTop(
 			countries[record.Country]++
 		}
 
-		players[record.AuthID]["wpn"] = append(players[record.AuthID]["wpn"], *record)
+		playersNub[record.AuthID] = append(playersNub[record.AuthID], record)
+		playerStat[record.AuthID]["nub"]++
+		playerStat[record.AuthID]["total"]++
+		playerInfo[record.AuthID]["country"] = strings.ToLower(record.Country)
+		playerInfo[record.AuthID]["steamID64"] = kreedz.SteamIDToSteamID64(record.AuthID)
+		playerInfo[record.AuthID]["nick"] = record.Name
+		// TODO first / visitor / gotGreat
+	}
+
+	wpn, err := mWpn.Query(ctx, schema.WpnQueryParam{})
+	if err != nil {
+		panic(err)
+	}
+	for _, record := range wpn.Data {
+		if kreedz.IsSteamID(record.AuthID) == false {
+			continue
+		}
+		if playerStat[record.AuthID] == nil {
+			playerStat[record.AuthID] = make(map[string]int64)
+			playerInfo[record.AuthID] = make(map[string]string)
+			if record.Country == "" {
+				record.Country = "n-"
+			}
+			countries[record.Country]++
+		}
+
+		playersWpn[record.AuthID] = append(playersWpn[record.AuthID], record)
 		playerStat[record.AuthID]["wpn"]++
 		playerStat[record.AuthID]["total"]++
 		playerInfo[record.AuthID]["country"] = strings.ToLower(record.Country)
@@ -165,12 +143,14 @@ func NewTop(
 	}
 
 	return &Top{
-		NubModel:            mNub,
 		ProModel:            mPro,
+		NubModel:            mNub,
 		WpnModel:            mWpn,
 		CountryModel:        mCountry,
 		WorldRecordModel:    mWorldRecord,
-		players:             players,
+		playersPro:          playersPro,
+		playersNub:          playersNub,
+		playersWpn:          playersWpn,
 		playerStat:          playerStat,
 		playerInfo:          playerInfo,
 		playerStatSortByPro: sortMapStringInt(proStat),
@@ -207,7 +187,9 @@ type Top struct {
 	WpnModel            model.IWpn
 	CountryModel        model.ICountry
 	WorldRecordModel    model.IWorldRecord
-	players             map[string]map[string][]schema.Wpn
+	playersPro          map[string][]*schema.Pro
+	playersNub          map[string][]*schema.Nub
+	playersWpn          map[string][]*schema.Wpn
 	playerStat          map[string]map[string]int64
 	playerInfo          map[string]map[string]string
 	playerStatSortByPro []string
@@ -230,7 +212,32 @@ func (a *Top) Player(c *gin.Context) {
 		return
 	}
 
-	if _, ok := a.players[player]; !ok {
+	h := gin.H{
+		"player": player,
+		"cate":   cate,
+		"stat":   a.playerStat[player],
+		"info":   a.playerInfo[player],
+	}
+
+	var exist bool
+	switch cate {
+	case "pro":
+		_, exist = a.playersPro[player]
+		if exist {
+			h["list"] = a.playersPro[player]
+		}
+	case "nub":
+		_, exist = a.playersNub[player]
+		if exist {
+			h["list"] = a.playersNub[player]
+		}
+	case "wpn":
+		_, exist = a.playersWpn[player]
+		if exist {
+			h["list"] = a.playersWpn[player]
+		}
+	}
+	if !exist {
 		ginplus.ResError(c, errors.New400Response("user not exist"))
 		return
 	}
@@ -247,21 +254,13 @@ func (a *Top) Player(c *gin.Context) {
 		}(steamID64, player)
 	}
 
-	h := gin.H{
-		"player": player,
-		"cate":   cate,
-		"list":   a.players[player][cate],
-		"stat":   a.playerStat[player],
-		"info":   a.playerInfo[player],
-	}
-
 	c.HTML(http.StatusOK, "top/player", h)
 }
 
 func (a *Top) Players(c *gin.Context) {
-	sort := c.Query("sort")
-	if sort == "" {
-		sort = "pro"
+	sortField := c.Query("sort")
+	if sortField == "" {
+		sortField = "pro"
 	}
 
 	size := uint64(30)
@@ -275,7 +274,7 @@ func (a *Top) Players(c *gin.Context) {
 
 		bgn := (page - 1) * size
 		end := bgn + size
-		switch sort {
+		switch sortField {
 		case "pro":
 			ginplus.ResSuccess(c, a.playerStatSortByPro[bgn:end])
 		case "nub":
@@ -287,8 +286,7 @@ func (a *Top) Players(c *gin.Context) {
 	}
 
 	h := gin.H{
-		"sort":                sort,
-		"players":             a.players,
+		"sort":                sortField,
 		"playerInfo":          a.playerInfo,
 		"playerStat":          a.playerStat,
 		"playerStatSortByPro": a.playerStatSortByPro[:size],
@@ -298,7 +296,6 @@ func (a *Top) Players(c *gin.Context) {
 		"countriesSort":       a.countriesSort,
 		"countriesInfo":       a.countriesInfo,
 	}
-
 	c.HTML(http.StatusOK, "top/players", h)
 }
 
@@ -360,4 +357,54 @@ func (a *Top) Top(c *gin.Context) {
 	}
 
 	c.HTML(http.StatusOK, "top/index", h)
+}
+
+func (a *Top) UpdateRecord(c *gin.Context) {
+	cate := c.Param("cate")
+
+	switch cate {
+	case "pro":
+		record := schema.Pro{}
+		if err := ginplus.ParseJSON(c, &record); err != nil {
+			ginplus.ResError(c, err)
+			return
+		}
+		if record.Validation() == false {
+			ginplus.ResError(c, errors.New400Response("error hash"))
+			return
+		}
+
+		ctx := ginplus.NewContext(c)
+		// 不支持盗版玩家进入排行，不需要验证nick了。
+		if kreedz.IsSteamID(record.AuthID) {
+			query, err := a.ProModel.Query(ctx, schema.ProQueryParam{
+				MapName: record.MapName,
+				AuthID:  record.AuthID,
+			})
+			if err != nil {
+				ginplus.ResError(c, errors.New400Response("error hash"))
+				return
+			}
+			if len(query.Data) == 0 {
+				err = a.ProModel.Create(ctx, record)
+				if err != nil {
+					ginplus.ResError(c, errors.New400Response("error hash"))
+					return
+				}
+
+			} else {
+				record.FinishCount++
+				err = a.ProModel.Update(ctx, &schema.ProQueryParam{
+					MapName: record.MapName,
+					AuthID:  record.AuthID,
+				}, record)
+				if err != nil {
+					ginplus.ResError(c, errors.New400Response("error hash"))
+					return
+				}
+
+			}
+		}
+
+	}
 }
