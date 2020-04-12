@@ -22,7 +22,7 @@ var VisibilityState = []string{"", "隐私", "好友可见", "公开"}
 
 type Profile struct {
 	OnlineState     string `xml:"onlineState"`
-	AvatarIcon      string `xml:"avatarIcon"`
+	AvatarFull      string `xml:"avatarFull"`
 	VisibilityState int    `xml:"visibilityState"`
 }
 

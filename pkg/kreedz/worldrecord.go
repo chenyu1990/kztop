@@ -44,6 +44,11 @@ var cacheTime []int64
 
 func init() {
 	cacheTime = make([]int64, len(localFile))
+
+	err := os.MkdirAll("./data/kreedz", 0755)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (a *WorldRecord) FirstSync() (bool, []*RecordInfo) {

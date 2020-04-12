@@ -1,0 +1,70 @@
+{{define "top/index"}}
+    <html>
+    {{template "common/css"}}
+    <link rel="stylesheet" type="text/css" href="/css/common.css">
+    <title>{{ .mapname }} - {{ .cate }}Top - 97Club</title>
+    <body>
+    {{template "common/nav"}}
+    <div class="top-container">
+        <div class="top-world-record">
+            <ul>
+                <li>{{ .wr }}</li>
+                <li>{{ .mapname }}</li>
+                <li><img src="/flag/{{.record.Country}}.png"/> {{ .record.Holder }}</li>
+                <li>{{ SecondsToMinutes .record.Time }}</li>
+                <li>{{ .record.Time }}</li>
+            </ul>
+        </div>
+        <div class="top-switch">
+            <ul>
+                <li class="{{if eq .cate "pro"}}active{{end}}"><a href="/top/pro/{{.mapname}}">无存排行{{if eq .cate "pro"}}[{{if .total}}{{if gt .total 100}}100{{else}}{{.total}}{{end}}/{{.total}}{{else}}0{{end}}]{{end}}</a></li>
+                <li class="{{if eq .cate "nub"}}active{{end}}"><a href="/top/nub/{{.mapname}}">存点排行{{if eq .cate "nub"}}[{{if .total}}{{if gt .total 100}}100{{else}}{{.total}}{{end}}/{{.total}}{{else}}0{{end}}]{{end}}</a></li>
+                <li class="{{if eq .cate "wpn"}}active{{end}}"><a href="/top/wpn/{{.mapname}}">武器排行{{if eq .cate "wpn"}}[{{if .total}}{{if gt .total 100}}100{{else}}{{.total}}{{end}}/{{.total}}{{else}}0{{end}}]{{end}}</a></li>
+            </ul>
+        </div>
+        <table class="top-table">
+            <tr class="top-table-header">
+                <th class="top-table-header-child">#</th>
+                <th class="top-table-header-child">挑战者</th>
+                <th class="top-table-header-child">挑战时间</th>
+                {{if ne $.cate "pro" }}
+                    <th class="top-table-header-child">存/读</th>
+                {{end}}
+                {{if eq $.cate "wpn" }}
+                    <th class="top-table-header-child">武器</th>
+                {{end}}
+                <th class="top-table-header-child">完成次数</th>
+                <th class="top-table-header-child">挑战日期</th>
+            </tr>
+            {{range $i, $v := .list}}
+                <tr class="top-table-data">
+                    {{if lt $i 3}}
+                        <td class="top-table-data-child"><img src="/img/record/{{Inc $i 1}}.gif" /></td>
+                    {{else}}
+                        <td class="top-table-data-child">{{Inc $i 1}}</td>
+                    {{end}}
+                    <td class="top-table-data-child"><img src="/flag/{{ToLower $v.Country}}.png" /> {{UnescapeString $v.Name}}{{if IsSteamID $v.AuthID}}<a class="top-steam" href="/player/{{SteamIDToSteamID64 $v.AuthID}}/nub">{{$v.AuthID}}</a>{{end}}</td>
+                    <td class="top-table-data-child">
+                        {{SecondsToMinutes $v.Time}}
+                        {{if and (ne $.cate "wpn") (gt $.record.Time 0.0)}}
+                            <div class="top-world-record-diff">
+                                <img src="/img/record/arrow_{{if IsSlowly $v.Time $.record.Time}}down{{else}}up{{end}}.png" />{{SubFloatRtnString $v.Time $.record.Time}}
+                            </div>
+                        {{end}}
+                    </td>
+                    {{if ne $.cate "pro" }}
+                        <td class="top-table-data-child">{{$v.CheckPoints}}/{{$v.GoChecks}}</td>
+                    {{end}}
+                    {{if eq $.cate "wpn" }}
+                        <td class="top-table-data-child"><img src="/img/weapon/{{$v.Weapon}}.gif" /></td>
+                    {{end}}
+                    <td class="top-table-data-child center">{{$v.FinishCount}}</td>
+                    <td class="top-table-data-child">{{FormatDate $v.Date}}</td>
+                </tr>
+            {{end}}
+
+        </table>
+    </div>
+    </body>
+    </html>
+{{end}}

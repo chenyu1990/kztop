@@ -131,12 +131,12 @@
     text-align: center;
 }
 
-.countries-table-data-child:nth-child(n+3),
+.countries-table-data-child:nth-child(3n+1),
 .countries-table-data-child:first-child {
     text-align: left;
 }
 
-.countries-table-header-child {
+.countries-table-header-child, .countries-table-data-child {
     text-align: center;
 }
 

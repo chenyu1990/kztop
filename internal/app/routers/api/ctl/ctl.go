@@ -13,5 +13,6 @@ import (
 func Inject(container *dig.Container) error {
 	_ = container.Provide(NewServer)
 	_ = container.Provide(NewTop)
+	_ = container.Provide(NewRecord)
 	return nil
 }

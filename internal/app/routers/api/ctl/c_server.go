@@ -14,8 +14,8 @@ func NewServer() *Server {
 type Server struct {
 }
 
-func (a *Server) Query(c *gin.Context) {
-	c.HTML(http.StatusOK, "server/index.tmpl", gin.H{
+func (a *Server) List(c *gin.Context) {
+	c.HTML(http.StatusOK, "server/index", gin.H{
 		"title": "Posts",
 	})
 }

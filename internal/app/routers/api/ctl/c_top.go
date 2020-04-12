@@ -241,7 +241,7 @@ func (a *Top) Player(c *gin.Context) {
 			if err != nil {
 				return
 			}
-			a.playerInfo[player]["avatarIcon"] = profile.AvatarIcon
+			a.playerInfo[player]["avatarFull"] = profile.AvatarFull
 			a.playerInfo[player]["onlineState"] = profile.OnlineState
 			a.playerInfo[player]["visibilityState"] = Steam.VisibilityState[profile.VisibilityState]
 		}(steamID64, player)

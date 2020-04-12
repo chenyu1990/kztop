@@ -11,6 +11,9 @@ all: start
 build:
 	@go build -ldflags "-w -s" -o $(SERVER_BIN) ./cmd/server
 
+build-for-linux:
+	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags "-w -s" -o $(SERVER_BIN) ./cmd/server
+
 start: 
 	go run cmd/server/main.go -c ./configs/config.toml -m ./configs/model.conf -swagger ./docs/swagger -menu ./configs/menu.json
 

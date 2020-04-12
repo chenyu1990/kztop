@@ -1,0 +1,33 @@
+# save at /lib/systemd/system/
+# $ useradd kztop -s /sbin/nologin -M
+# $ setcap CAP_NET_BIND_SERVICE=+eip /srv/kztop/kztop  # Allow binding low port
+
+[Unit]
+Description=KZ-TOP service
+ConditionPathExists=/srv/kztop/kztop
+After=network.target
+
+[Service]
+Type=simple
+User=kztop
+Group=kztop
+LimitNOFILE=1024
+
+Restart=on-failure
+RestartSec=10
+startLimitIntervalSec=60
+
+WorkingDirectory=/srv/kztop
+ExecStart=/srv/kztop/kztop -c configs/config.toml
+
+# make sure log directory exists and owned by syslog
+PermissionsStartOnly=true
+ExecStartPre=/bin/mkdir -p /var/log/kztop
+ExecStartPre=/bin/chown syslog:adm /var/log/kztop
+ExecStartPre=/bin/chmod 755 /var/log/kztop
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=kztop
+
+[Install]
+WantedBy=multi-user.target

@@ -24,6 +24,7 @@ func RegisterRouter(app *gin.Engine, container *dig.Container) error {
 		e *casbin.SyncedEnforcer,
 		cServer *ctl.Server,
 		cTop *ctl.Top,
+		cRecord *ctl.Record,
 	) error {
 		// 请求频率限制中间件
 		app.Use(middleware.RateLimiterMiddleware())
@@ -40,7 +41,6 @@ func RegisterRouter(app *gin.Engine, container *dig.Container) error {
 			"UnescapeString":     html.UnescapeString,
 		})
 		app.LoadHTMLGlob("templates/**/*")
-		app.GET("/server", cServer.Query)
 
 		top := app.Group("/top")
 		{
@@ -56,6 +56,17 @@ func RegisterRouter(app *gin.Engine, container *dig.Container) error {
 		players := app.Group("/players")
 		{
 			players.GET("", cTop.Players)
+		}
+
+		record := app.Group("/record")
+		{
+			record.GET("", cRecord.Query)
+			record.GET("/:mapname", cRecord.Query)
+		}
+
+		ips := app.Group("/ips")
+		{
+			ips.GET("", cServer.List)
 		}
 
 		return nil

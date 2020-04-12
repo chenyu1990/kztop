@@ -70,13 +70,14 @@ func InitHTTPServer(ctx context.Context, container *dig.Container) func() {
 	}
 
 	go func() {
-		logger.Printf(ctx, "HTTP服务开始启动，地址监听在：[%s]", addr)
 		var err error
 		if cfg.CertFile != "" && cfg.KeyFile != "" {
 			srv.TLSConfig = &tls.Config{MinVersion: tls.VersionTLS12}
 			err = srv.ListenAndServeTLS(cfg.CertFile, cfg.KeyFile)
+			logger.Printf(ctx, "HTTPS服务开始启动，地址监听在：[%s]", addr)
 		} else {
 			err = srv.ListenAndServe()
+			logger.Printf(ctx, "HTTP服务开始启动，地址监听在：[%s]", addr)
 		}
 		if err != nil && err != http.ErrServerClosed {
 			logger.Errorf(ctx, err.Error())
