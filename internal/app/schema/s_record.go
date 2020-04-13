@@ -21,6 +21,7 @@ const (
 )
 
 type PlayerInfo string
+
 const (
 	_         PlayerInfo = ""
 	REGION               = "region"
@@ -65,9 +66,9 @@ type Record struct {
 	SteamID     string    `json:"steam_id"`
 	Region      string    `json:"region"`
 	Nick        string    `json:"nick"`
-	Time        float64   `json:"time"`
+	Time        string   `json:"time"`
 	Weapon      string    `json:"weapon"`
-	FinishCount int       `json:"finish_count"`
+	FinishCount int       `json:"-"`
 	Server      string    `json:"server"`
 	CheckPoints int       `json:"check_points"`
 	GoChecks    int       `json:"go_checks"`

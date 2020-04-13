@@ -2,6 +2,8 @@ package entity
 
 import (
 	"context"
+	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -18,13 +20,14 @@ type SchemaRecord schema.Record
 
 // ToRecord 转换为Record实体
 func (a SchemaRecord) ToRecord() *Record {
+	time, _ := strconv.ParseFloat(a.Time, 10)
 	item := &Record{
 		Cate:        &a.Cate,
 		MapName:     &a.MapName,
 		SteamID:     &a.SteamID,
 		Region:      &a.Region,
 		Nick:        &a.Nick,
-		Time:        &a.Time,
+		Time:        &time,
 		Weapon:      &a.Weapon,
 		FinishCount: &a.FinishCount,
 		Server:      &a.Server,
@@ -72,7 +75,7 @@ func (a Record) ToSchemaRecord() *schema.Record {
 		SteamID:     *a.SteamID,
 		Region:      *a.Region,
 		Nick:        *a.Nick,
-		Time:        *a.Time,
+		Time:        fmt.Sprintf("%.2f", *a.Time),
 		Weapon:      *a.Weapon,
 		FinishCount: *a.FinishCount,
 		Server:      *a.Server,

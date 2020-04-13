@@ -45,7 +45,7 @@ func RegisterRouter(app *gin.Engine, container *dig.Container) error {
 		top := app.Group("/top")
 		{
 			top.GET("/:cate/:mapname", cTop.Top)
-			top.PUT("/:cate", cTop.UpdateRecord)
+			top.POST("", cTop.UpdateRecord)
 		}
 
 		player := app.Group("/player")
