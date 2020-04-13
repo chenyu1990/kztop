@@ -267,7 +267,8 @@ func (a *Top) Players(c *gin.Context) {
 
 func (a *Top) Top(c *gin.Context) {
 	mapname := c.Param("mapname")
-	cate := c.Param("cate")
+	pCate := c.Param("cate")
+	cate := schema.GetCate(pCate)
 
 	ctx := ginplus.NewContext(c)
 
@@ -281,7 +282,7 @@ func (a *Top) Top(c *gin.Context) {
 
 	h := gin.H{
 		"mapname": mapname,
-		"cate":    cate,
+		"cate":    pCate,
 	}
 	if record != nil {
 		h["record"] = record
@@ -295,18 +296,23 @@ func (a *Top) Top(c *gin.Context) {
 		h["wr"] = ""
 	}
 
-	orders := schema.Orders{}
-	orders["time"] = schema.OrderASC
-	list, err := a.RecordModel.Query(ctx, &schema.RecordQueryParam{
-		MapName: mapname,
-	}, schema.RecordQueryOptions{PageParam: &schema.PaginationParam{
-		PageSize: 100,
-	}}, schema.RecordQueryOptions{
-		OrderParam: &schema.OrderParam{
-			Orders: orders,
-		},
-	})
-	if err != nil {
+		orders := schema.Orders{}
+		if cate == schema.WPN {
+			orders["speed"] = schema.OrderASC
+		}
+		orders["time"] = schema.OrderASC
+		list, err := a.RecordModel.Query(ctx, &schema.RecordQueryParam{
+			Cate:    cate,
+			MapName: mapname,
+		}, schema.RecordQueryOptions{
+			PageParam: &schema.PaginationParam{
+				PageSize: 100,
+			},
+			OrderParam: &schema.OrderParam{
+				Orders: orders,
+			},
+		})
+		if err != nil {
 		ginplus.ResError(c, err)
 		return
 	}
