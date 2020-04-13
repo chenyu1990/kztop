@@ -51,7 +51,7 @@ func RegisterRouter(app *gin.Engine, container *dig.Container) error {
 		player := app.Group("/player")
 		{
 			player.GET("/:player", cTop.Player)
-			player.GET("/:player/:type", cTop.Player)
+			player.GET("/:player/:cate", cTop.Player)
 		}
 
 		players := app.Group("/players")

@@ -19,10 +19,11 @@ type SchemaRecord schema.Record
 // ToRecord 转换为Record实体
 func (a SchemaRecord) ToRecord() *Record {
 	item := &Record{
+		Cate:        &a.Cate,
 		MapName:     &a.MapName,
 		SteamID:     &a.SteamID,
-		Country:     &a.Country,
-		Name:        &a.Name,
+		Region:      &a.Region,
+		Nick:        &a.Nick,
 		Time:        &a.Time,
 		Weapon:      &a.Weapon,
 		FinishCount: &a.FinishCount,
@@ -41,8 +42,8 @@ type Record struct {
 	Cate        *schema.Cate `gorm:"column:cate;index:top"`
 	MapName     *string      `gorm:"column:mapname;size:64;index:top"`
 	SteamID     *string      `gorm:"column:steam_id;size:64"`
-	Country     *string      `gorm:"column:country;size:6"`
-	Name        *string      `gorm:"column:name;size:64"`
+	Region      *string      `gorm:"column:region;size:6"`
+	Nick        *string      `gorm:"column:nick;size:64"`
 	Time        *float64     `gorm:"column:time"`
 	Weapon      *string      `gorm:"column:weapon;size:64"`
 	FinishCount *int         `gorm:"column:finish_count"`
@@ -66,10 +67,11 @@ func (a Record) TableName() string {
 // ToSchemaRecord 转换为Record对象
 func (a Record) ToSchemaRecord() *schema.Record {
 	item := &schema.Record{
+		Cate:        *a.Cate,
 		MapName:     *a.MapName,
 		SteamID:     *a.SteamID,
-		Country:     *a.Country,
-		Name:        *a.Name,
+		Region:      *a.Region,
+		Nick:        *a.Nick,
 		Time:        *a.Time,
 		Weapon:      *a.Weapon,
 		FinishCount: *a.FinishCount,

@@ -1,0 +1,17 @@
+{{define "top/player_more"}}
+    {{range $mapname := .sort}}
+        <tr class="top-table-data">
+            <td class="top-table-data-child"></td>
+            <td class="top-table-data-child"><a href="/top/{{$.pCate}}/{{(index $.list $mapname).MapName}}">{{(index $.list $mapname).MapName}}</a></td>
+            <td class="top-table-data-child">{{SecondsToMinutes (index $.list $mapname).Time}}</td>
+            {{if ne $.cate 1}}
+                <td class="top-table-data-child">{{(index $.list $mapname).CheckPoints}}/{{(index $.list $mapname).GoChecks}}</td>
+            {{end}}
+            {{if eq $.cate 3}}
+                <td class="top-table-data-child"><img src="/img/weapon/{{(index $.list $mapname).Weapon}}.gif" /></td>
+            {{end}}
+            <td class="top-table-data-child center">{{(index $.list $mapname).FinishCount}}</td>
+            <td class="top-table-data-child">{{FormatDate (index $.list $mapname).Date}}</td>
+        </tr>
+    {{end}}
+{{end}}

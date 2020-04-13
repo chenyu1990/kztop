@@ -1,0 +1,18 @@
+{{define "top/players_more"}}
+    {{range $steamID := $.playerStatSort}}
+        <tr class="top-table-data">
+            <td class="top-table-data-child center"></td>
+            <td class="top-table-data-child">
+                <img src="/flag/{{ToLower (index $.playerInfo $steamID).region}}.png"/> {{UnescapeString (index $.playerInfo $steamID).nick}}
+                <a class="top-steam" href="/player/{{(index $.playerInfo $steamID).steamID64}}/{{$.sortField}}">
+                    {{$steamID}}
+                </a>
+            </td>
+            <td class="top-table-data-child">{{if (index (index $.playerStat $steamID) 1)}}{{index (index $.playerStat $steamID) 1}}{{else}}0{{end}}</td>
+            <td class="top-table-data-child">{{if (index (index $.playerStat $steamID) 2)}}{{index (index $.playerStat $steamID) 2}}{{else}}0{{end}}</td>
+            <td class="top-table-data-child">{{if (index (index $.playerStat $steamID) 3)}}{{index (index $.playerStat $steamID) 3}}{{else}}0{{end}}</td>
+            <td class="top-table-data-child">{{if (index (index $.playerStat $steamID) 101)}}{{index (index $.playerStat $steamID) 101}}{{else}}0{{end}}</td>
+            <td class="top-table-data-child">{{if (index (index $.playerStat $steamID) 100)}}{{index (index $.playerStat $steamID) 100}}{{else}}0{{end}}</td>
+        </tr>
+    {{end}}
+{{end}}

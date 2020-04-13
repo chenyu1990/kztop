@@ -20,7 +20,7 @@ func (a SchemaWorldRecord) ToWorldRecord() *WorldRecord {
 	item := &WorldRecord{
 		MapName:      &a.MapName,
 		Holder:       &a.Holder,
-		Country:      &a.Country,
+		Region:       &a.Region,
 		Time:         &a.Time,
 		Organization: &a.Organization,
 	}
@@ -31,7 +31,7 @@ func (a SchemaWorldRecord) ToWorldRecord() *WorldRecord {
 type WorldRecord struct {
 	MapName      *string              `gorm:"column:mapname;size:64;unique_index:record"`
 	Holder       *string              `gorm:"column:holder;size:64"`
-	Country      *string              `gorm:"column:country;size:3"`
+	Region       *string              `gorm:"column:region;size:3"`
 	Time         *float64             `gorm:"column:time"`
 	Organization *kreedz.Organization `gorm:"column:organization;size:1;unique_index:record"`
 }
@@ -50,7 +50,7 @@ func (a WorldRecord) ToSchemaWorldRecord() *schema.WorldRecord {
 	item := &schema.WorldRecord{
 		MapName:      *a.MapName,
 		Holder:       *a.Holder,
-		Country:      *a.Country,
+		Region:       *a.Region,
 		Time:         *a.Time,
 		Organization: *a.Organization,
 	}

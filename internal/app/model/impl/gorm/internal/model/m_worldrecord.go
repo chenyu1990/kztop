@@ -4,10 +4,10 @@ import (
 	"context"
 	"kztop/pkg/kreedz"
 
+	"github.com/jinzhu/gorm"
 	"kztop/internal/app/errors"
 	"kztop/internal/app/model/impl/gorm/internal/entity"
 	"kztop/internal/app/schema"
-	"github.com/jinzhu/gorm"
 )
 
 // NewWorldRecord 创建WorldRecord存储实例
@@ -38,13 +38,12 @@ func (a *WorldRecord) where(db *gorm.DB, params *schema.WorldRecordQueryParam) *
 	if v := params.Holder; v != "" {
 		db = db.Where("holder=?", v)
 	}
-	if v := params.Country; v != "" {
-		db = db.Where("country=?", v)
+	if v := params.Region; v != "" {
+		db = db.Where("region=?", v)
 	}
 	if v := params.Organizations; v != nil && len(v) > 1 {
 		db = db.Where("organization=? or organization=?", v[0], v[1])
 	}
-
 
 	return db
 }

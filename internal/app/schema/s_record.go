@@ -10,19 +10,61 @@ import (
 type Cate int
 
 const (
-	_ Cate = iota
+	_ Cate = iota // 不要影响 PRO / NUB / WPN 的值，影响某些逻辑
 	PRO
 	NUB
 	WPN
+	NULL        = 0
+	FIRST       = 100
+	TOTAL       = 101
+	FinishCount = 102
 )
+
+type PlayerInfo string
+const (
+	_         PlayerInfo = ""
+	REGION               = "region"
+	NICK                 = "nick"
+	STEAMID64            = "steamID64"
+)
+
+const PageSize = uint64(30)
+
+func GetCate(cate string) Cate {
+	switch cate {
+	case "pro":
+		return PRO
+	case "nub":
+		return NUB
+	case "wpn":
+		return WPN
+	case "first":
+		return FIRST
+	}
+	return NULL
+}
+
+func (a *Cate) ToString() string {
+	switch *a {
+	case PRO:
+		return "pro"
+	case NUB:
+		return "nub"
+	case WPN:
+		return "wpn"
+	case FIRST:
+		return "FIRST"
+	}
+	return ""
+}
 
 // Record Record对象
 type Record struct {
 	Cate        Cate      `json:"cate"`
 	MapName     string    `json:"mapname"`
 	SteamID     string    `json:"steam_id"`
-	Country     string    `json:"country"`
-	Name        string    `json:"name"`
+	Region      string    `json:"region"`
+	Nick        string    `json:"nick"`
 	Time        float64   `json:"time"`
 	Weapon      string    `json:"weapon"`
 	FinishCount int       `json:"finish_count"`
@@ -35,14 +77,20 @@ type Record struct {
 	Hash        string    `json:"hash"`
 }
 
+type UpdateInfo struct {
+	SteamID string `json:"steam_id"`
+	Region  string `json:"region"`
+	Nick    string `json:"nick"`
+}
+
 func (a *Record) Validation() bool {
 	// TODO Try toString()
 	queryStr := fmt.Sprintf("%d%s%s%s%s%.2f%s%d%s%d%d%d%s",
 		a.Cate,
 		a.MapName,
 		a.SteamID,
-		a.Country,
-		a.Name,
+		a.Region,
+		a.Nick,
 		a.Time,
 		a.Weapon,
 		a.FinishCount,
@@ -60,7 +108,7 @@ func (a *Record) Validation() bool {
 type RecordQueryParam struct {
 	Cate    Cate   `form:"cate"`
 	MapName string `form:"mapname"`
-	AuthID  string `form:"authid"`
+	SteamID string `form:"steam_id"`
 }
 
 // RecordQueryOptions Record对象查询可选参数项

@@ -3,10 +3,10 @@ package model
 import (
 	"context"
 
+	"github.com/jinzhu/gorm"
 	"kztop/internal/app/errors"
 	"kztop/internal/app/model/impl/gorm/internal/entity"
 	"kztop/internal/app/schema"
-	"github.com/jinzhu/gorm"
 )
 
 // NewRecord 创建Record存储实例
@@ -34,17 +34,19 @@ func (a *Record) where(db *gorm.DB, params *schema.RecordQueryParam) *gorm.DB {
 	if v := params.MapName; v != "" {
 		db = db.Where("mapname=?", v)
 	}
-	if v := params.AuthID; v != "" {
-		db = db.Where("authid=?", v)
+	if v := params.SteamID; v != "" {
+		db = db.Where("steam_id=?", v)
 	}
 
 	return db
 }
 
 // Query 查询数据
-func (a *Record) Query(ctx context.Context, params schema.RecordQueryParam, opts ...schema.RecordQueryOptions) (*schema.RecordQueryResult, error) {
+func (a *Record) Query(ctx context.Context, params *schema.RecordQueryParam, opts ...schema.RecordQueryOptions) (*schema.RecordQueryResult, error) {
 	db := entity.GetRecordDB(ctx, a.db)
-	db = a.where(db, &params)
+	if params != nil {
+		db = a.where(db, params)
+	}
 
 	opt := a.getQueryOption(opts...)
 	if opt.OrderParam != nil {
@@ -79,8 +81,8 @@ func (a *Record) Get(ctx context.Context, recordID string, opts ...schema.Record
 }
 
 // Create 创建数据
-func (a *Record) Create(ctx context.Context, item schema.Record) error {
-	Record := entity.SchemaRecord(item).ToRecord()
+func (a *Record) Create(ctx context.Context, item *schema.Record) error {
+	Record := entity.SchemaRecord(*item).ToRecord()
 	result := entity.GetRecordDB(ctx, a.db).Create(Record)
 	if err := result.Error; err != nil {
 		return errors.WithStack(err)
@@ -89,9 +91,11 @@ func (a *Record) Create(ctx context.Context, item schema.Record) error {
 }
 
 // Update 更新数据
-func (a *Record) Update(ctx context.Context, recordID string, item schema.Record) error {
+func (a *Record) Update(ctx context.Context, params *schema.RecordQueryParam, item schema.Record) error {
 	Record := entity.SchemaRecord(item).ToRecord()
-	result := entity.GetRecordDB(ctx, a.db).Where("record_id=?", recordID).Omit("record_id", "creator").Updates(Record)
+	db := entity.GetRecordDB(ctx, a.db)
+	db = a.where(db, params)
+	result := db.Omit("cate", "mapname", "steam_id").Updates(Record)
 	if err := result.Error; err != nil {
 		return errors.WithStack(err)
 	}
@@ -100,7 +104,7 @@ func (a *Record) Update(ctx context.Context, recordID string, item schema.Record
 
 // UpdateInfo 更新信息
 func (a *Record) UpdateInfo(ctx context.Context, info schema.UpdateInfo) error {
-	result := entity.GetProDB(ctx, a.db).Where("authid=?", info.AuthID).Omit("authid").Updates(info)
+	result := entity.GetRecordDB(ctx, a.db).Where("steam_id=?", info.SteamID).Omit("steam_id").Updates(info)
 	if err := result.Error; err != nil {
 		return errors.WithStack(err)
 	}

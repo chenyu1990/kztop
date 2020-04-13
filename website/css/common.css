@@ -24,7 +24,7 @@
     vertical-align: middle;
 }
 
-.top-container, .countries-container {
+.top-container, .regions-container {
     width: 100%;
 }
 
@@ -87,7 +87,7 @@
     color: #fff;
 }
 
-.top-table, .countries-table {
+.top-table, .regions-table {
     width: 100%;
 }
 
@@ -100,7 +100,7 @@
     color: #0099CC !important;
 }
 
-.player-table-header, .top-table-header, .countries-table-header {
+.player-table-header, .top-table-header, .regions-table-header {
     background-color: #659EC7;
     color: #FFF;
     font-size: 12px;
@@ -109,7 +109,7 @@
 .top-table-header-child {
 }
 
-.top-table-data:nth-child(odd), .countries-table-data:nth-child(odd) {
+.top-table-data:nth-child(odd), .regions-table-data:nth-child(odd) {
     background: #F4F7FA;
 }
 
@@ -119,11 +119,11 @@
     padding: 0 3px;
 }
 
-.countries-table {
+.regions-table {
     margin-bottom: 20px;
 }
 
-.countries-table-data-child {
+.regions-table-data-child {
     height: 20px;
     vertical-align: middle;
     padding: 0 3px;
@@ -131,16 +131,16 @@
     text-align: center;
 }
 
-.countries-table-data-child:nth-child(3n+1),
-.countries-table-data-child:first-child {
+.regions-table-data-child:nth-child(3n+1),
+.regions-table-data-child:first-child {
     text-align: left;
 }
 
-.countries-table-header-child, .countries-table-data-child {
+.regions-table-header-child, .regions-table-data-child {
     text-align: center;
 }
 
-.countries-table-data {
+.regions-table-data {
     height: 15px;
 }
 
@@ -151,7 +151,7 @@
     font-style: italic;
 }
 
-.top-table-header, .countries-table-header, .top-table-data {
+.top-table-header, .regions-table-header, .top-table-data {
     height: 30px;
 }
 
@@ -159,7 +159,7 @@
     text-align: center !important;
 }
 
-.top-table-header-child, .countries-table-header-child {
+.top-table-header-child, .regions-table-header-child {
     height: 20px;
     vertical-align: middle;
 }

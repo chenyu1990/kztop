@@ -25,12 +25,6 @@ func Inject(container *dig.Container) error {
 	_ = container.Provide(func(b *internal.Role) bll.IRole { return b })
 	_ = container.Provide(internal.NewUser)
 	_ = container.Provide(func(b *internal.User) bll.IUser { return b })
-	_ = container.Provide(internal.NewNub)
-	_ = container.Provide(func(b *internal.Nub) bll.INub { return b })
-	_ = container.Provide(internal.NewPro)
-	_ = container.Provide(func(b *internal.Pro) bll.IPro { return b })
-	_ = container.Provide(internal.NewWpn)
-	_ = container.Provide(func(b *internal.Wpn) bll.IWpn { return b })
 	_ = container.Provide(internal.NewKreedz)
 	_ = container.Provide(func(b *internal.Kreedz) bll.IKreedz { return b })
 	return nil

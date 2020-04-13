@@ -42,16 +42,16 @@ func (a *Kreedz) RecordUpdate(ctx context.Context, organization kreedz.Organizat
 			}
 			if exist != nil {
 				a.WorldRecordModel.Update(ctx, organization, record.MapName, schema.WorldRecord{
-					Holder:  record.Holder,
-					Country: record.Country,
-					Time:    record.Time,
+					Holder: record.Holder,
+					Region: record.Region,
+					Time:   record.Time,
 				})
 			} else {
 				a.WorldRecordModel.Create(ctx, schema.WorldRecord{
 					Organization: organization,
 					MapName:      record.MapName,
 					Holder:       record.Holder,
-					Country:      record.Country,
+					Region:       record.Region,
 					Time:         record.Time,
 				})
 			}
@@ -70,7 +70,7 @@ func (a *Kreedz) CreateRecord(ctx context.Context, organization kreedz.Organizat
 			Organization: organization,
 			MapName:      record.MapName,
 			Holder:       record.Holder,
-			Country:      record.Country,
+			Region:       record.Region,
 			Time:         record.Time,
 		})
 		if err != nil {

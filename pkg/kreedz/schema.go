@@ -28,6 +28,6 @@ type WorldRecord struct {
 type RecordInfo struct {
 	MapName string
 	Holder  string
-	Country string
+	Region  string
 	Time    float64
 }

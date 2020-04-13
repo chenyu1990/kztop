@@ -24,7 +24,7 @@
                 <tr class="top-table-data">
                     <td class="top-table-data-child">{{Inc $i 1}}</td>
                     <td class="top-table-data-child"><a href="/top/nub/{{$v.MapName}}">{{$v.MapName}}</a></td>
-                    <td class="top-table-data-child"><img src="/flag/{{ToLower $v.Country}}.png" /> {{UnescapeString $v.Holder}}</td>
+                    <td class="top-table-data-child"><img src="/flag/{{ToLower $v.Region}}.png" /> {{UnescapeString $v.Holder}}</td>
                     <td class="top-table-data-child">{{SecondsToMinutes $v.Time}}</td>
                 </tr>
             {{end}}

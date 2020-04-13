@@ -63,7 +63,7 @@ func AutoMigrate(db *gorm.DB) error {
 		new(entity.News),
 		new(entity.Record),
 		new(entity.WorldRecord),
-		new(entity.Country),
+		new(entity.Region),
 		new(entity.Admin),
 	).Error
 }
@@ -83,18 +83,12 @@ func Inject(container *dig.Container) error {
 	_ = container.Provide(func(m *imodel.Menu) model.IMenu { return m })
 	_ = container.Provide(imodel.NewRole)
 	_ = container.Provide(func(m *imodel.Role) model.IRole { return m })
-	_ = container.Provide(imodel.NewNub)
-	_ = container.Provide(func(m *imodel.Nub) model.INub { return m })
-	_ = container.Provide(imodel.NewPro)
-	_ = container.Provide(func(m *imodel.Pro) model.IPro { return m })
-	_ = container.Provide(imodel.NewWpn)
-	_ = container.Provide(func(m *imodel.Wpn) model.IWpn { return m })
 	_ = container.Provide(imodel.NewRecord)
 	_ = container.Provide(func(m *imodel.Record) model.IRecord { return m })
 	_ = container.Provide(imodel.NewNews)
 	_ = container.Provide(func(m *imodel.News) model.INews { return m })
-	_ = container.Provide(imodel.NewCountry)
-	_ = container.Provide(func(m *imodel.Country) model.ICountry { return m })
+	_ = container.Provide(imodel.NewRegion)
+	_ = container.Provide(func(m *imodel.Region) model.IRegion { return m })
 	_ = container.Provide(imodel.NewAdmin)
 	_ = container.Provide(func(m *imodel.Admin) model.IAdmin { return m })
 	_ = container.Provide(imodel.NewWorldRecord)

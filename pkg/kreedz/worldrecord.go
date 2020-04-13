@@ -263,7 +263,7 @@ func (a *WorldRecord) unserialize(record string) *RecordInfo {
 	return &RecordInfo{
 		MapName: split[0],
 		Holder:  split[2],
-		Country: split[3],
+		Region:  split[3],
 		Time:    time,
 	}
 }

@@ -6,7 +6,7 @@ import "kztop/pkg/kreedz"
 type WorldRecord struct {
 	MapName      string              `json:"mapname"`
 	Holder       string              `json:"holder"`
-	Country      string              `json:"country"`
+	Region       string              `json:"region"`
 	Time         float64             `json:"time"`
 	Organization kreedz.Organization `json:"organization"`
 }
@@ -15,7 +15,7 @@ type WorldRecord struct {
 type WorldRecordQueryParam struct {
 	MapName       string                `form:"mapname"`
 	Holder        string                `form:"holder"`
-	Country       string                `form:"country"`
+	Region        string                `form:"region"`
 	Organization  kreedz.Organization   `form:"organization"`
 	Organizations []kreedz.Organization `-`
 }
