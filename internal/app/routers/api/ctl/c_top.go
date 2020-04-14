@@ -13,6 +13,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // NewTop 创建top控制器
@@ -120,6 +121,7 @@ func NewTop(
 		regionsInfo:      regionsInfo,
 		playerStatSort:   make(map[schema.Cate][]string),
 	}
+
 	a.UpdateStats(schema.NULL)
 	return a
 }
@@ -170,60 +172,64 @@ func (a *Top) Player(c *gin.Context) {
 		return
 	}
 
-	if _, exist := a.players[cate][player]; !exist {
-		ginplus.ResError(c, errors.New400Response("user not exist"))
-		return
-	}
-
-	// 以完成次数排序
-	finishCountStat := make(map[string]int)
-	for _, record := range a.players[cate][player] {
-		finishCountStat[record.MapName] = record.FinishCount
-	}
-	finishCountSort := sortMapStringInt(finishCountStat)
-
-	list := make(map[string]*schema.Record)
-	for _, record := range a.players[cate][player] {
-		list[record.MapName] = record
-	}
 	h := gin.H{
 		"cate":  cate,
 		"pCate": pCate,
-		"list":  list,
 	}
+	if _, exist := a.players[cate][player]; !exist {
 
-	pageStr := c.Query("page")
-	if pageStr != "" {
-		page, err := strconv.ParseUint(pageStr, 10, 64)
-		if err != nil {
-			ginplus.ResError(c, errors.New400Response("页面错误"))
+	} else {
+		// 以完成次数排序
+		finishCountStat := make(map[string]int)
+		var pageSize uint64
+		for i, record := range a.players[cate][player] {
+			pageSize = uint64(i + 1)
+			finishCountStat[record.MapName] = record.FinishCount
+		}
+		finishCountSort := sortMapStringInt(finishCountStat)
+
+		list := make(map[string]*schema.Record)
+		for _, record := range a.players[cate][player] {
+			list[record.MapName] = record
+		}
+
+		h["list"] = list
+		pageStr := c.Query("page")
+		if pageStr != "" {
+			page, err := strconv.ParseUint(pageStr, 10, 64)
+			if err != nil {
+				ginplus.ResError(c, errors.New400Response("页面错误"))
+				return
+			}
+
+			bgn := (page - 1) * schema.PageSize
+			end := bgn + schema.PageSize
+			h["sort"] = finishCountSort[bgn:end]
+			c.HTML(http.StatusOK, "top/player_more", h)
 			return
 		}
 
-		bgn := (page - 1) * schema.PageSize
-		end := bgn + schema.PageSize
-		h["sort"] = finishCountSort[bgn:end]
-		c.HTML(http.StatusOK, "top/player_more", h)
-		return
-	}
+		if _, ok := a.playerInfo[player]["avatar"]; !ok {
+			go func(steamID64 string, player string) {
+				profile, err := Steam.GetProfile(steamID64)
+				if err != nil {
+					return
+				}
+				a.playerInfo[player]["avatarFull"] = profile.AvatarFull
+				a.playerInfo[player]["onlineState"] = profile.OnlineState
+				a.playerInfo[player]["visibilityState"] = Steam.VisibilityState[profile.VisibilityState]
+			}(steamID64, player)
+		}
 
-	if _, ok := a.playerInfo[player]["avatar"]; !ok {
-		go func(steamID64 string, player string) {
-			profile, err := Steam.GetProfile(steamID64)
-			if err != nil {
-				return
-			}
-			a.playerInfo[player]["avatarFull"] = profile.AvatarFull
-			a.playerInfo[player]["onlineState"] = profile.OnlineState
-			a.playerInfo[player]["visibilityState"] = Steam.VisibilityState[profile.VisibilityState]
-		}(steamID64, player)
+		if pageSize > schema.PageSize {
+			pageSize = schema.PageSize
+		}
+		h["sort"] = finishCountSort[:pageSize]
 	}
-
 	h["player"] = player
 	h["stat"] = a.playerStat[player]
 	h["info"] = a.playerInfo[player]
 	h["region"] = a.regionsInfo
-	h["sort"] = finishCountSort[:schema.PageSize]
 	h["steamVisibilityState"] = Steam.VisibilityState
 	c.HTML(http.StatusOK, "top/player", h)
 }
@@ -296,23 +302,23 @@ func (a *Top) Top(c *gin.Context) {
 		h["wr"] = ""
 	}
 
-		orders := schema.Orders{}
-		if cate == schema.WPN {
-			orders["speed"] = schema.OrderASC
-		}
-		orders["time"] = schema.OrderASC
-		list, err := a.RecordModel.Query(ctx, &schema.RecordQueryParam{
-			Cate:    cate,
-			MapName: mapname,
-		}, schema.RecordQueryOptions{
-			PageParam: &schema.PaginationParam{
-				PageSize: 100,
-			},
-			OrderParam: &schema.OrderParam{
-				Orders: orders,
-			},
-		})
-		if err != nil {
+	orders := schema.Orders{}
+	if cate == schema.WPN {
+		orders["speed"] = schema.OrderASC
+	}
+	orders["time"] = schema.OrderASC
+	list, err := a.RecordModel.Query(ctx, &schema.RecordQueryParam{
+		Cate:    cate,
+		MapName: mapname,
+	}, schema.RecordQueryOptions{
+		PageParam: &schema.PaginationParam{
+			PageSize: 100,
+		},
+		OrderParam: &schema.OrderParam{
+			Orders: orders,
+		},
+	})
+	if err != nil {
 		ginplus.ResError(c, err)
 		return
 	}
@@ -328,6 +334,19 @@ func (a *Top) UpdateRecord(c *gin.Context) {
 		ginplus.ResError(c, err)
 		return
 	}
+
+	t, err := strconv.ParseFloat(newRecord.TimeString, 10)
+	if err != nil {
+		ginplus.ResError(c, err)
+		return
+	}
+	newRecord.Time = t
+
+	if newRecord.Validation() == false {
+		ginplus.ResError(c, errors.New400Response("dont hack me"))
+		return
+	}
+
 	if newRecord.Speed == 250 {
 		if newRecord.CheckPoints == 0 && newRecord.GoChecks == 0 {
 			newRecord.Cate = schema.PRO
@@ -339,13 +358,8 @@ func (a *Top) UpdateRecord(c *gin.Context) {
 	}
 	cate := newRecord.Cate
 	// 不支持盗版玩家进入排行，不需要验证nick了。
-	if kreedz.IsSteamID(newRecord.SteamID) {
+	if kreedz.IsSteamID(newRecord.SteamID) == false {
 		ginplus.ResError(c, errors.New400Response("不支持盗版玩家进入排行"))
-		return
-	}
-
-	if newRecord.Validation() == false {
-		ginplus.ResError(c, errors.New400Response("dont hack me"))
 		return
 	}
 
@@ -366,7 +380,9 @@ func (a *Top) UpdateRecord(c *gin.Context) {
 		ginplus.ResError(c, err)
 		return
 	}
+	newRecord.Date = time.Now().UTC()
 	if len(query.Data) == 0 {
+		newRecord.FinishCount = 1
 		err = a.RecordModel.Create(ctx, &newRecord)
 		if err != nil {
 			ginplus.ResError(c, err)
@@ -402,7 +418,7 @@ func (a *Top) UpdateRecord(c *gin.Context) {
 	a.playerStat[newRecord.SteamID][schema.FinishCount]++
 
 	// 更新用户信息
-	newRegion, newNick := a.UpdateInfo(newRecord.Region, newRecord.SteamID, newRecord.Nick)
+	newRegion, newNick := a.UpdateInfo(strings.ToLower(newRecord.Region), newRecord.SteamID, newRecord.Nick)
 	if newRegion != "" || newNick != "" {
 		go a.RecordModel.UpdateInfo(ctx, schema.UpdateInfo{
 			SteamID: newRecord.SteamID,
@@ -411,9 +427,11 @@ func (a *Top) UpdateRecord(c *gin.Context) {
 		})
 	}
 
+	go a.SwapMapFirst(&newRecord)
 	// 更新统计一定要在最后
-	a.SwapMapFirst(&newRecord)
-	a.UpdateStats(cate)
+	go a.UpdateStats(cate)
+	// TODO Return INFO  get top
+	ginplus.ResOK(c)
 }
 
 func (a *Top) UpdateStats(cate schema.Cate) {
@@ -474,7 +492,7 @@ func (a *Top) UpdateInfo(region, steamID, nick string) (updateRegion, updateNick
 			updateNick = nick
 		}
 	}
-	a.playerInfo[steamID][schema.REGION] = strings.ToLower(region)
+	a.playerInfo[steamID][schema.REGION] = region
 	a.playerInfo[steamID][schema.STEAMID64] = kreedz.SteamIDToSteamID64(steamID)
 	a.playerInfo[steamID][schema.NICK] = nick
 	return
@@ -492,12 +510,13 @@ func (a *Top) SwapMapFirst(newRecord *schema.Record) {
 			if swap {
 				a.playerStat[a.firstEachMap[newRecord.Cate][newRecord.MapName].SteamID][schema.FIRST]--
 				a.playerStat[newRecord.SteamID][schema.FIRST]++
+				a.firstEachMap[newRecord.Cate][newRecord.MapName].SteamID = newRecord.SteamID
+				a.firstEachMap[newRecord.Cate][newRecord.MapName].Time = newRecord.Time
 			}
 		}
 	} else {
 		a.playerStat[newRecord.SteamID][schema.FIRST]++
+		a.firstEachMap[newRecord.Cate][newRecord.MapName].SteamID = newRecord.SteamID
+		a.firstEachMap[newRecord.Cate][newRecord.MapName].Time = newRecord.Time
 	}
-
-	a.firstEachMap[newRecord.Cate][newRecord.MapName].SteamID = newRecord.SteamID
-	a.firstEachMap[newRecord.Cate][newRecord.MapName].Time = newRecord.Time
 }

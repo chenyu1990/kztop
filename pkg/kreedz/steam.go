@@ -33,6 +33,6 @@ func IsSteamID(steamID string) bool {
 	if len(steamID) > 19 {
 		return false
 	}
-	match, _ := regexp.MatchString("STEAM_0:[0-1]:[0-9]{6}", steamID)
+	match, _ := regexp.MatchString("STEAM_0:[0-1]:[0-9]{6,}", steamID)
 	return match
 }

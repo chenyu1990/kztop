@@ -66,7 +66,8 @@ type Record struct {
 	SteamID     string    `json:"steam_id"`
 	Region      string    `json:"region"`
 	Nick        string    `json:"nick"`
-	Time        string   `json:"time"`
+	Time        float64   `json:"-"`
+	TimeString  string    `json:"time"`
 	Weapon      string    `json:"weapon"`
 	FinishCount int       `json:"-"`
 	Server      string    `json:"server"`
@@ -85,16 +86,14 @@ type UpdateInfo struct {
 }
 
 func (a *Record) Validation() bool {
-	// TODO Try toString()
-	queryStr := fmt.Sprintf("%d%s%s%s%s%.2f%s%d%s%d%d%d%s",
+	queryStr := fmt.Sprintf("%d%s%s%s%s%s%s%s%d%d%d%s",
 		a.Cate,
 		a.MapName,
 		a.SteamID,
 		a.Region,
 		a.Nick,
-		a.Time,
+		a.TimeString,
 		a.Weapon,
-		a.FinishCount,
 		a.Server,
 		a.CheckPoints,
 		a.GoChecks,
