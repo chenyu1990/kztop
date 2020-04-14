@@ -98,7 +98,7 @@ func (a *Kreedz) CreateNews(ctx context.Context, date time.Time, organization kr
 	}
 	return a.NewsModel.Create(ctx, schema.News{
 		Organization: organization,
-		Period:       result.Period + 1, // TODO
+		Period:       result.Period + 1,
 		Data:         string(json),
 		Date:         date,
 	})
