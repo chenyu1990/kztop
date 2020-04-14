@@ -3,7 +3,9 @@
         <tr class="top-table-data">
             <td class="top-table-data-child center"></td>
             <td class="top-table-data-child">
-                <img src="/flag/{{ToLower (index $.playerInfo $steamID).region}}.png"/> {{UnescapeString (index $.playerInfo $steamID).nick}}
+                <img src="/flag/{{ToLower (index $.playerInfo $steamID).region}}.png"
+                     title="{{(index $.regionsInfo (ToLower (index $.playerInfo $steamID).region)).English}} - {{(index $.regionsInfo (ToLower (index $.playerInfo $steamID).region)).SortName}}"
+                /> {{UnescapeString (index $.playerInfo $steamID).nick}}
                 <a class="top-steam" href="/player/{{(index $.playerInfo $steamID).steamID64}}/{{$.sortField}}">
                     {{$steamID}}
                 </a>

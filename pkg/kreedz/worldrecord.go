@@ -5,6 +5,7 @@ import (
 	"github.com/sergi/go-diff/diffmatchpatch"
 	"io"
 	"io/ioutil"
+	"kztop/pkg/util"
 	"net/http"
 	"os"
 	"strconv"
@@ -27,7 +28,7 @@ var Name = []string{
 }
 
 var organizations = []string{
-	"http://kztop:8080/xj.txt",
+	"http://kztop:8080/debug.txt",
 	"https://xtreme-jumps.eu/demos.txt",
 	"https://cosy-climbing.net/demoz.txt",
 	"http://world-surf.com/demos.txt",
@@ -51,7 +52,7 @@ func init() {
 	}
 }
 
-func (a *WorldRecord) FirstSync() (bool, []*RecordInfo) {
+func (a *WorldRecord) FirstSync() (bool, []*RecordInfo, error) {
 	file, err := os.Open(localFile[a.Organization])
 	defer func() {
 		if file != nil {
@@ -59,7 +60,10 @@ func (a *WorldRecord) FirstSync() (bool, []*RecordInfo) {
 		}
 	}()
 	if err != nil && os.IsNotExist(err) {
-		a.downloadFile(localFile[a.Organization])
+		err = a.downloadFile(localFile[a.Organization])
+		if err != nil {
+			return false, nil, err
+		}
 		newFile, err := os.Open(localFile[a.Organization])
 		if err != nil {
 			panic(err)
@@ -78,10 +82,10 @@ func (a *WorldRecord) FirstSync() (bool, []*RecordInfo) {
 			records = append(records, recordInfo)
 		}
 
-		return true, records
+		return true, records, nil
 	}
 
-	return false, nil
+	return false, nil, nil
 }
 
 func (a *WorldRecord) fileTimeout() bool {
@@ -204,16 +208,19 @@ func (a *WorldRecord) getDiff() error {
 func (a *WorldRecord) getFileInfo() {
 	resp, err := http.Head(organizations[a.Organization])
 	if err != nil {
-		panic(err)
+		util.HandleHttpError(err)
+		return
 	}
 
+	defer resp.Body.Close()
 	a.recordFileHeader = resp.Header
 }
 
-func (a *WorldRecord) downloadFile(savePath string) {
+func (a *WorldRecord) downloadFile(savePath string) error {
 	resp, err := http.Get(organizations[a.Organization])
 	if err != nil {
-		panic(err)
+		util.HandleHttpError(err)
+		return err
 	}
 
 	f, err := os.Create(savePath)
@@ -222,23 +229,27 @@ func (a *WorldRecord) downloadFile(savePath string) {
 	}
 	defer f.Close()
 	io.Copy(f, resp.Body)
+	return nil
 }
 
-func (a *WorldRecord) CheckUpdate(organization *Organization) bool {
+func (a *WorldRecord) CheckUpdate(organization *Organization) (bool, error) {
 	if organization == nil {
 		panic("have to input Organization")
 	}
 	a.Organization = *organization
 
 	if a.fileTimeout() == true {
-		a.downloadFile(localFile[a.Organization] + "new")
+		err := a.downloadFile(localFile[a.Organization] + "new")
+		if err != nil {
+			return false, nil
+		}
 		a.getDiff()
 		if len(a.News) > 0 {
-			return true
+			return true, nil
 		}
 	}
 
-	return false
+	return false, nil
 }
 
 func (a *WorldRecord) CopyFile() {

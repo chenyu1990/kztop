@@ -1,6 +1,6 @@
 # save at /lib/systemd/system/
 # $ useradd kztop -s /sbin/nologin -M
-# $ setcap CAP_NET_BIND_SERVICE=+eip /srv/kztop/kztop_linux  # Allow binding low port
+# $ setcap CAP_NET_BIND_SERVICE=+eip /srv/kztop/kztop_linux  # Allow binding low port, execute when every upload to server
 
 [Unit]
 Description=KZ-TOP service

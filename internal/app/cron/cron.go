@@ -23,7 +23,7 @@ func Init(container *dig.Container) {
 				cron.Recover(cron.DefaultLogger),
 			))
 			// Seconds | Minutes | Hours | Day of month | Month | Day of week
-			//_, err = c.AddFunc("*/1 * * * * *", jKreedz.UpdateWorldRecord)
+			_, err = c.AddFunc("*/1 * * * * *", jKreedz.UpdateWorldRecord)
 		} else {
 			c = cron.New(cron.WithChain(
 				cron.Recover(cron.DefaultLogger),

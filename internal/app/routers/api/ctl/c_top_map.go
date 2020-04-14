@@ -17,7 +17,7 @@ func (a *Top) Top(c *gin.Context) {
 
 	record, err := a.WorldRecordModel.Get(ctx, schema.WorldRecordQueryParam{
 		MapName:       mapname,
-		Organizations: []kreedz.Organization{kreedz.XtremeJumps, kreedz.CosyClimbing, kreedz.WorldSurf},
+		Organizations: []kreedz.Organization{kreedz.XtremeJumps, kreedz.CosyClimbing},
 	})
 	if err != nil {
 		panic(err)
@@ -26,6 +26,7 @@ func (a *Top) Top(c *gin.Context) {
 	h := gin.H{
 		"mapname": mapname,
 		"cate":    pCate,
+		"regions": a.regionsInfo,
 	}
 	if record != nil {
 		h["record"] = record

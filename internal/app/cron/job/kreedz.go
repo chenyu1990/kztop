@@ -42,14 +42,21 @@ func (a *KreedzJob) UpdateWorldRecord() {
 
 	for _, organization := range organizations {
 		wr.Organization = organization
-		first, records := wr.FirstSync()
+		first, records, err := wr.FirstSync()
+		if err != nil {
+			continue
+		}
 		if first == true {
 			err := a.KreedzBll.CreateRecord(ctx, wr.Organization, records)
 			if err != nil {
 				panic(err)
 			}
 		} else {
-			if wr.CheckUpdate(&organization) == true {
+			update, err := wr.CheckUpdate(&organization)
+			if err != nil {
+				continue
+			}
+			if update == true {
 				err := a.KreedzBll.RecordUpdate(ctx, wr.Organization, wr.NewRecords)
 				if err != nil {
 					panic(err)

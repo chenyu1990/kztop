@@ -24,7 +24,9 @@
             </tr>
             <tr>
                 <td>国家</td>
-                <td><img src="/flag/{{ .info.region }}.png" /> {{(index $.region (ToLower .info.region)).Chinese}}</td>
+                <td><img src="/flag/{{ .info.region }}.png"
+                         title="{{(index $.region (ToLower $.info.region)).English}} - {{(index $.region (ToLower $.info.region)).SortName}}"
+                    /> {{(index $.region (ToLower .info.region)).Chinese}}</td>
             </tr>
             <tr>
                 <td>玩家状态</td>

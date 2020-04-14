@@ -7,6 +7,7 @@ import (
 	"kztop/internal/app/schema"
 	"kztop/pkg/Steam"
 	"kztop/pkg/kreedz"
+	"kztop/pkg/util"
 	"net/http"
 	"strconv"
 )
@@ -65,6 +66,7 @@ func (a *Top) Player(c *gin.Context) {
 			go func(steamID64 string, player string) {
 				profile, err := Steam.GetProfile(steamID64)
 				if err != nil {
+					util.HandleHttpError(err)
 					return
 				}
 				a.playerInfo[player]["avatarFull"] = profile.AvatarFull

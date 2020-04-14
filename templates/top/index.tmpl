@@ -10,7 +10,9 @@
             <ul>
                 <li>{{ .wr }}</li>
                 <li>{{ .mapname }}</li>
-                <li><img src="/flag/{{.record.Region}}.png"/> {{ .record.Holder }}</li>
+                <li><img src="/flag/{{.record.Region}}.png"
+                         title="{{(index $.regions (ToLower .record.Region)).English}} - {{(index $.regions (ToLower .record.Region)).SortName}}"
+                    /> {{ .record.Holder }}</li>
                 <li>{{ SecondsToMinutes .record.Time }}</li>
                 <li>{{ .record.Time }}</li>
             </ul>
@@ -43,7 +45,14 @@
                     {{else}}
                         <td class="top-table-data-child">{{Inc $i 1}}</td>
                     {{end}}
-                    <td class="top-table-data-child"><img src="/flag/{{ToLower $v.Region}}.png" /> {{UnescapeString $v.Nick}}{{if IsSteamID $v.SteamID}}<a class="top-steam" href="/player/{{SteamIDToSteamID64 $v.SteamID}}/nub">{{$v.SteamID}}</a>{{end}}</td>
+                    <td class="top-table-data-child">
+                        <img src="/flag/{{ToLower $v.Region}}.png"
+                             title="{{(index $.regions (ToLower $v.Region)).English}} - {{(index $.regions (ToLower $v.Region)).SortName}}"
+                        /> {{UnescapeString $v.Nick}}
+                        {{if IsSteamID $v.SteamID}}
+                            <a class="top-steam" href="/player/{{SteamIDToSteamID64 $v.SteamID}}/nub">{{$v.SteamID}}</a>
+                        {{end}}
+                    </td>
                     <td class="top-table-data-child">
                         {{SecondsToMinutes $v.Time}}
                         {{if and (ne $.cate "wpn") (gt $.record.Time 0.0)}}

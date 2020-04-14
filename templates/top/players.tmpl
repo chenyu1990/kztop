@@ -28,8 +28,10 @@
                 {{if eq (Mod $number 4) 1}}
                     <tr class="regions-table-data">
                 {{end}}
-                <td class="regions-table-data-child"><img src="/flag/{{ToLower $region}}.png"
-                                                          title="{{(index $.regionsInfo (ToLower $region)).English}}"/> {{(index $.regionsInfo (ToLower $region)).Chinese}}
+                <td class="regions-table-data-child">
+                    <img src="/flag/{{ToLower $region}}.png"
+                         title="{{(index $.regionsInfo (ToLower $region)).English}} - {{(index $.regionsInfo (ToLower $region)).SortName}}"
+                    /> {{(index $.regionsInfo (ToLower $region)).Chinese}}
                 </td>
                 <td class="regions-table-data-child">{{index $.regions $region}}</td>
                 {{if ne (Mod $number 4) 0}}
@@ -75,7 +77,9 @@
                 <tr class="top-table-data">
                     <td class="top-table-data-child center">{{$counter}}</td>
                     <td class="top-table-data-child">
-                        <img src="/flag/{{ToLower (index $.playerInfo $steamID).region}}.png"/> {{UnescapeString (index $.playerInfo $steamID).nick}}
+                        <img src="/flag/{{ToLower (index $.playerInfo $steamID).region}}.png"
+                             title="{{(index $.regionsInfo (ToLower (index $.playerInfo $steamID).region)).English}} - {{(index $.regionsInfo (ToLower (index $.playerInfo $steamID).region)).SortName}}"
+                        /> {{UnescapeString (index $.playerInfo $steamID).nick}}
                         <a class="top-steam" href="/player/{{(index $.playerInfo $steamID).steamID64}}/{{$.sortField}}">
                             {{$steamID}}
                         </a>
