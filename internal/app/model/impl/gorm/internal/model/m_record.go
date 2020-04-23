@@ -37,6 +37,9 @@ func (a *Record) where(db *gorm.DB, params *schema.RecordQueryParam) *gorm.DB {
 	if v := params.SteamID; v != "" {
 		db = db.Where("steam_id=?", v)
 	}
+	if v := params.Route; v != "" {
+		db = db.Where("route=?", v)
+	}
 
 	return db
 }
@@ -95,7 +98,7 @@ func (a *Record) Update(ctx context.Context, params *schema.RecordQueryParam, it
 	Record := entity.SchemaRecord(item).ToRecord()
 	db := entity.GetRecordDB(ctx, a.db)
 	db = a.where(db, params)
-	result := db.Omit("cate", "mapname", "steam_id").Updates(Record)
+	result := db.Omit("cate", "mapname", "steam_id", "route").Updates(Record)
 	if err := result.Error; err != nil {
 		return errors.WithStack(err)
 	}

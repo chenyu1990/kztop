@@ -104,11 +104,19 @@ func (a *Record) Validation() bool {
 	return hash == a.Hash
 }
 
+func (a *Record) RouteMapName() string {
+	if a.Route != "" {
+		return fmt.Sprintf("%s[%s]", a.MapName, a.Route)
+	}
+	return a.MapName
+}
+
 // RecordQueryParam 查询条件
 type RecordQueryParam struct {
 	Cate    Cate   `form:"cate"`
 	MapName string `form:"mapname"`
 	SteamID string `form:"steam_id"`
+	Route   string `form:"route"`
 }
 
 // RecordQueryOptions Record对象查询可选参数项

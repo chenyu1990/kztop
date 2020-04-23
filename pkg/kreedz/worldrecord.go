@@ -184,9 +184,11 @@ func (a *WorldRecord) getDiff() error {
 			a.News[holder][mapname] = make([]*RecordInfo, 2)
 		}
 		records["holder"].MapName = ""
-		records["exHolder"].MapName = ""
 		a.News[holder][mapname][0] = records["holder"]
-		a.News[holder][mapname][1] = records["exHolder"]
+		if _, ok := records["exHolder"]; ok {
+			records["exHolder"].MapName = ""
+			a.News[holder][mapname][1] = records["exHolder"]
+		}
 
 		//for who, recordInfo := range records {
 		//	switch who {

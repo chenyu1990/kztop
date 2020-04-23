@@ -70,22 +70,22 @@ func (a *Top) UpdateInfo(region, steamID, nick string) (updateRegion, updateNick
 }
 
 func (a *Top) SwapMapFirst(newRecord *schema.Record) {
-	if _, ok := a.firstEachMap[newRecord.Cate][newRecord.MapName]; ok {
-		if a.firstEachMap[newRecord.Cate][newRecord.MapName].SteamID != newRecord.SteamID {
+	if _, ok := a.firstEachMap[newRecord.Cate][newRecord.RouteMapName()]; ok {
+		if a.firstEachMap[newRecord.Cate][newRecord.RouteMapName()].SteamID != newRecord.SteamID {
 			swap := false
 			if newRecord.Cate == schema.WPN {
-				swap = (newRecord.Speed == a.firstEachMap[newRecord.Cate][newRecord.MapName].Speed && a.firstEachMap[newRecord.Cate][newRecord.MapName].Time > newRecord.Time) || a.firstEachMap[newRecord.Cate][newRecord.MapName].Speed > newRecord.Speed
+				swap = (newRecord.Speed == a.firstEachMap[newRecord.Cate][newRecord.RouteMapName()].Speed && a.firstEachMap[newRecord.Cate][newRecord.RouteMapName()].Time > newRecord.Time) || a.firstEachMap[newRecord.Cate][newRecord.RouteMapName()].Speed > newRecord.Speed
 			} else {
-				swap = a.firstEachMap[newRecord.Cate][newRecord.MapName].Time > newRecord.Time
+				swap = a.firstEachMap[newRecord.Cate][newRecord.RouteMapName()].Time > newRecord.Time
 			}
 			if swap {
-				a.playerStat[a.firstEachMap[newRecord.Cate][newRecord.MapName].SteamID][schema.FIRST]--
+				a.playerStat[a.firstEachMap[newRecord.Cate][newRecord.RouteMapName()].SteamID][schema.FIRST]--
 				a.playerStat[newRecord.SteamID][schema.FIRST]++
-				a.firstEachMap[newRecord.Cate][newRecord.MapName] = newRecord
+				a.firstEachMap[newRecord.Cate][newRecord.RouteMapName()] = newRecord
 			}
 		}
 	} else {
 		a.playerStat[newRecord.SteamID][schema.FIRST]++
-		a.firstEachMap[newRecord.Cate][newRecord.MapName] = newRecord
+		a.firstEachMap[newRecord.Cate][newRecord.RouteMapName()] = newRecord
 	}
 }

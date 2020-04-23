@@ -37,13 +37,13 @@ func (a *Top) Player(c *gin.Context) {
 		var pageSize uint64
 		for i, record := range a.players[cate][player] {
 			pageSize = uint64(i + 1)
-			finishCountStat[record.MapName] = record.FinishCount
+			finishCountStat[record.RouteMapName()] = record.FinishCount
 		}
 		finishCountSort := sortMapStringInt(finishCountStat)
 
 		list := make(map[string]*schema.Record)
 		for _, record := range a.players[cate][player] {
-			list[record.MapName] = record
+			list[record.RouteMapName()] = record
 		}
 
 		h["list"] = list
@@ -57,6 +57,9 @@ func (a *Top) Player(c *gin.Context) {
 
 			bgn := (page - 1) * schema.PageSize
 			end := bgn + schema.PageSize
+			if end > uint64(a.playerStat[player][cate]) {
+				end = uint64(a.playerStat[player][cate])
+			}
 			h["sort"] = finishCountSort[bgn:end]
 			c.HTML(http.StatusOK, "top/player_more", h)
 			return

@@ -10,8 +10,9 @@ import (
 	"strings"
 	"time"
 )
-
+t a
 func (a *Top) UpdateRecord(c *gin.Context) {
+	ctx := ginplus.NewContext(c)
 	newRecord := schema.Record{}
 	if err := ginplus.ParseJSON(c, &newRecord); err != nil {
 		ginplus.ResError(c, err)
@@ -58,11 +59,11 @@ func (a *Top) UpdateRecord(c *gin.Context) {
 		5. 更新排序 done
 		6. 返回最新排行
 	*/
-	ctx := ginplus.NewContext(c)
 	query, err := a.RecordModel.Query(ctx, &schema.RecordQueryParam{
 		Cate:    cate,
 		MapName: newRecord.MapName,
 		SteamID: newRecord.SteamID,
+		Route:   newRecord.Route,
 	})
 	if err != nil {
 		ginplus.ResError(c, err)
@@ -85,22 +86,36 @@ func (a *Top) UpdateRecord(c *gin.Context) {
 		a.playerStat[newRecord.SteamID][schema.TOTAL]++
 	} else {
 		oldRecord = query.Data[0]
-		newRecord.FinishCount = oldRecord.FinishCount + 1
+		oldRecord.FinishCount++
 		err = a.RecordModel.Update(ctx, &schema.RecordQueryParam{
 			Cate:    cate,
-			MapName: newRecord.MapName,
-			SteamID: newRecord.SteamID,
+			MapName: oldRecord.MapName,
+			SteamID: oldRecord.SteamID,
+			Route:   oldRecord.Route,
 		}, newRecord)
 		if err != nil {
 			ginplus.ResError(c, err)
 			return
 		}
 
-		// 更新排行榜缓存
-		for i, record := range a.players[cate][newRecord.SteamID] {
-			if record.MapName == newRecord.MapName {
-				a.players[cate][newRecord.SteamID][i] = &newRecord
-				break
+		if oldRecord.Time > newRecord.Time {
+			err = a.RecordModel.Update(ctx, &schema.RecordQueryParam{
+				Cate:    cate,
+				MapName: newRecord.MapName,
+				SteamID: newRecord.SteamID,
+				Route:   newRecord.Route,
+			}, newRecord)
+			if err != nil {
+				ginplus.ResError(c, err)
+				return
+			}
+
+			// 更新排行榜缓存
+			for i, record := range a.players[cate][newRecord.SteamID] {
+				if record.RouteMapName() == newRecord.RouteMapName() {
+					a.players[cate][newRecord.SteamID][i] = &newRecord
+					break
+				}
 			}
 		}
 	}
@@ -132,9 +147,10 @@ func (a *Top) UpdateRecord(c *gin.Context) {
 	query, err = a.RecordModel.Query(ctx, &schema.RecordQueryParam{
 		Cate:    cate,
 		MapName: newRecord.MapName,
+		Route:   newRecord.Route,
 	}, schema.RecordQueryOptions{
-		PageParam:  &schema.PaginationParam{
-			PageSize:  100,
+		PageParam: &schema.PaginationParam{
+			PageSize: 100,
 		},
 		OrderParam: &schema.OrderParam{
 			Orders: orders,

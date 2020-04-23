@@ -1,6 +1,7 @@
 package ctl
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"kztop/internal/app/ginplus"
 	"kztop/internal/app/schema"
@@ -11,6 +12,8 @@ import (
 func (a *Top) Top(c *gin.Context) {
 	mapname := c.Param("mapname")
 	pCate := c.Param("cate")
+	route := c.Query("route")
+
 	cate := schema.GetCate(pCate)
 
 	ctx := ginplus.NewContext(c)
@@ -23,8 +26,15 @@ func (a *Top) Top(c *gin.Context) {
 		panic(err)
 	}
 
+	var RouteMapname string
+	if route != "" {
+		RouteMapname = fmt.Sprintf("%s[%s]", mapname, route)
+	} else {
+		RouteMapname = mapname
+	}
+
 	h := gin.H{
-		"mapname": mapname,
+		"mapname": RouteMapname,
 		"cate":    pCate,
 		"regions": a.regionsInfo,
 	}
@@ -48,6 +58,7 @@ func (a *Top) Top(c *gin.Context) {
 	list, err := a.RecordModel.Query(ctx, &schema.RecordQueryParam{
 		Cate:    cate,
 		MapName: mapname,
+		Route:   route,
 	}, schema.RecordQueryOptions{
 		PageParam: &schema.PaginationParam{
 			PageSize: 100,

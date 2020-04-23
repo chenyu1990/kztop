@@ -40,16 +40,16 @@ func NewTop(
 			continue
 		}
 
-		if firstEachMap[record.Cate][record.MapName] == nil {
-			firstEachMap[record.Cate][record.MapName] = record
+		if firstEachMap[record.Cate][record.RouteMapName()] == nil {
+			firstEachMap[record.Cate][record.RouteMapName()] = record
 		} else {
 			if record.Cate != schema.WPN {
-				if firstEachMap[record.Cate][record.MapName].Time > record.Time {
-					firstEachMap[record.Cate][record.MapName] = record
+				if firstEachMap[record.Cate][record.RouteMapName()].Time > record.Time {
+					firstEachMap[record.Cate][record.RouteMapName()] = record
 				}
 			} else {
-				if speed := firstEachMap[record.Cate][record.MapName].Speed; (speed == record.Speed && firstEachMap[record.Cate][record.MapName].Time > record.Time) || speed > record.Speed {
-					firstEachMap[record.Cate][record.MapName] = record
+				if speed := firstEachMap[record.Cate][record.RouteMapName()].Speed; (speed == record.Speed && firstEachMap[record.Cate][record.RouteMapName()].Time > record.Time) || speed > record.Speed {
+					firstEachMap[record.Cate][record.RouteMapName()] = record
 				}
 			}
 		}
