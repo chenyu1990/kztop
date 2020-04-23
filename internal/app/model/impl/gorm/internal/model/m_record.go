@@ -37,7 +37,7 @@ func (a *Record) where(db *gorm.DB, params *schema.RecordQueryParam) *gorm.DB {
 	if v := params.SteamID; v != "" {
 		db = db.Where("steam_id=?", v)
 	}
-	if v := params.Route; v != "" {
+	if v := params.Route; v != nil {
 		db = db.Where("route=?", v)
 	}
 

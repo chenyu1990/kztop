@@ -113,10 +113,10 @@ func (a *Record) RouteMapName() string {
 
 // RecordQueryParam 查询条件
 type RecordQueryParam struct {
-	Cate    Cate   `form:"cate"`
-	MapName string `form:"mapname"`
-	SteamID string `form:"steam_id"`
-	Route   string `form:"route"`
+	Cate    Cate    `form:"cate"`
+	MapName string  `form:"mapname"`
+	SteamID string  `form:"steam_id"`
+	Route   *string `form:"route"`
 }
 
 // RecordQueryOptions Record对象查询可选参数项

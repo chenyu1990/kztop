@@ -7,12 +7,18 @@ import (
 	"kztop/internal/app/schema"
 	"kztop/pkg/kreedz"
 	"net/http"
+	"strings"
 )
 
 func (a *Top) Top(c *gin.Context) {
 	mapname := c.Param("mapname")
 	pCate := c.Param("cate")
 	route := c.Query("route")
+
+	if i := strings.Index(mapname, "["); i > -1 {
+		route = mapname[i + 1:len(mapname) - 1]
+		mapname = mapname[:i]
+	}
 
 	cate := schema.GetCate(pCate)
 
@@ -58,7 +64,7 @@ func (a *Top) Top(c *gin.Context) {
 	list, err := a.RecordModel.Query(ctx, &schema.RecordQueryParam{
 		Cate:    cate,
 		MapName: mapname,
-		Route:   route,
+		Route:   &route,
 	}, schema.RecordQueryOptions{
 		PageParam: &schema.PaginationParam{
 			PageSize: 100,

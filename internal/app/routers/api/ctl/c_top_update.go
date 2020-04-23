@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 )
-t a
+
 func (a *Top) UpdateRecord(c *gin.Context) {
 	ctx := ginplus.NewContext(c)
 	newRecord := schema.Record{}
@@ -63,7 +63,7 @@ func (a *Top) UpdateRecord(c *gin.Context) {
 		Cate:    cate,
 		MapName: newRecord.MapName,
 		SteamID: newRecord.SteamID,
-		Route:   newRecord.Route,
+		Route:   &newRecord.Route,
 	})
 	if err != nil {
 		ginplus.ResError(c, err)
@@ -91,7 +91,7 @@ func (a *Top) UpdateRecord(c *gin.Context) {
 			Cate:    cate,
 			MapName: oldRecord.MapName,
 			SteamID: oldRecord.SteamID,
-			Route:   oldRecord.Route,
+			Route:   &oldRecord.Route,
 		}, newRecord)
 		if err != nil {
 			ginplus.ResError(c, err)
@@ -103,7 +103,7 @@ func (a *Top) UpdateRecord(c *gin.Context) {
 				Cate:    cate,
 				MapName: newRecord.MapName,
 				SteamID: newRecord.SteamID,
-				Route:   newRecord.Route,
+				Route:   &newRecord.Route,
 			}, newRecord)
 			if err != nil {
 				ginplus.ResError(c, err)
@@ -147,7 +147,7 @@ func (a *Top) UpdateRecord(c *gin.Context) {
 	query, err = a.RecordModel.Query(ctx, &schema.RecordQueryParam{
 		Cate:    cate,
 		MapName: newRecord.MapName,
-		Route:   newRecord.Route,
+		Route:   &newRecord.Route,
 	}, schema.RecordQueryOptions{
 		PageParam: &schema.PaginationParam{
 			PageSize: 100,
